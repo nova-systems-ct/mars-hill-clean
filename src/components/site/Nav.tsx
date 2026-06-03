@@ -105,6 +105,14 @@ export function Nav() {
           </nav>
 
           <div className="ml-auto flex items-center gap-3">
+            {/* Ministry Login — visible on md+ */}
+            <Link
+              to="/admin"
+              className="hidden items-center rounded-full border border-gold/50 px-4 py-1.5 text-xs font-medium uppercase tracking-[0.18em] text-gold transition hover:bg-gold hover:text-navy md:inline-flex"
+            >
+              Ministry Login
+            </Link>
+
             {/* Hamburger — always visible, opens full overlay */}
             <button
               aria-label={open ? "Close menu" : "Open full menu"}

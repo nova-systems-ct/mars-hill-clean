@@ -5,7 +5,7 @@ import { Vision } from "@/components/site/Vision";
 import { Footer } from "@/components/site/Footer";
 import { PodcastPlayer } from "@/components/site/PodcastPlayer";
 import { useContent } from "@/context/ContentContext";
-import founder from "@/assets/founder.jpg";
+import founder from "@/assets/founder-new.jpg";
 import tot from "@/assets/tot.jpg";
 
 export default function Home() {

@@ -735,20 +735,47 @@ function DomainTab() {
   );
 }
 
+// ── Admin icons ────────────────────────────────────────────────────────────────
+
+const ICON_PATHS: Record<string, string> = {
+  blog:     "M11 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5m-1.414-9.414a2 2 0 1 1 2.828 2.828L11.828 15H9v-2.828l8.586-8.586z",
+  papers:   "M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2z",
+  library:  "M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253",
+  podcast:  "M19 11a7 7 0 0 1-7 7m0 0a7 7 0 0 1-7-7m7 7v4m0 0H8m4 0h4M12 4a3 3 0 0 1 3 3v4a3 3 0 0 1-6 0V7a3 3 0 0 1 3-3z",
+  events:   "M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2z",
+  steeped:  "M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8zM6 1v3M10 1v3M14 1v3",
+  homepage: "M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z",
+  social:   "M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 1 1 0-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 1 0 5.367-2.684 3 3 0 0 0-5.367 2.684zm0 9.316a3 3 0 1 0 5.368 2.684 3 3 0 0 0-5.368-2.684z",
+  domain:   "M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 0 1 9-9",
+  support:  "M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 0 1-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z",
+};
+
+function AdminIcon({ name }: { name: string }) {
+  return (
+    <svg className="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+      <path strokeLinecap="round" strokeLinejoin="round" d={ICON_PATHS[name] ?? ""} />
+    </svg>
+  );
+}
+
 // ── Admin shell ────────────────────────────────────────────────────────────────
 
-type Tab = "papers"|"library"|"podcast"|"events"|"blog"|"steeped"|"homepage"|"social"|"support"|"domain";
-const TABS: { id: Tab; label: string }[] = [
-  { id:"papers",   label:"Seminary Papers" },
-  { id:"library",  label:"Library" },
-  { id:"podcast",  label:"Podcast" },
-  { id:"events",   label:"Theology on Tap" },
-  { id:"blog",     label:"Blog" },
-  { id:"steeped",  label:"Steeped in Truth" },
-  { id:"homepage", label:"Homepage" },
-  { id:"social",   label:"Social Links" },
-  { id:"support",  label:"Support" },
-  { id:"domain",   label:"Domain" },
+type Tab = "blog"|"papers"|"library"|"podcast"|"events"|"steeped"|"homepage"|"social"|"support"|"domain";
+type TabDef = { id: Tab; label: string; icon: string };
+
+const CONTENT_TABS: TabDef[] = [
+  { id:"blog",     label:"Blog",             icon:"blog" },
+  { id:"papers",   label:"Seminary Papers",  icon:"papers" },
+  { id:"library",  label:"Library",          icon:"library" },
+  { id:"podcast",  label:"Podcast",          icon:"podcast" },
+  { id:"events",   label:"Theology on Tap",  icon:"events" },
+  { id:"steeped",  label:"Steeped in Truth", icon:"steeped" },
+];
+const SETTINGS_TABS: TabDef[] = [
+  { id:"homepage", label:"Homepage",         icon:"homepage" },
+  { id:"social",   label:"Social Links",     icon:"social" },
+  { id:"domain",   label:"Domain",           icon:"domain" },
+  { id:"support",  label:"Support",          icon:"support" },
 ];
 
 export default function AdminPage() {
@@ -793,14 +820,28 @@ export default function AdminPage() {
             </div>
           </div>
 
-          {/* Tabs */}
-          <div className="mx-auto flex max-w-7xl overflow-x-auto px-6 lg:px-10">
-            {TABS.map(t => (
-              <button key={t.id} onClick={() => setActiveTab(t.id)}
-                className={`shrink-0 whitespace-nowrap border-b-2 px-4 py-3 text-xs font-medium uppercase tracking-[0.16em] transition ${activeTab===t.id ? "border-gold text-navy" : "border-transparent text-slate-ink hover:text-navy"}`}>
-                {t.label}
-              </button>
-            ))}
+          {/* Tab bar — Content + Settings groups */}
+          <div className="mx-auto max-w-7xl px-6 lg:px-10">
+            {/* Row 1: Content tabs */}
+            <div className="flex items-center overflow-x-auto border-b border-border/30">
+              <span className="shrink-0 pr-3 text-[9px] font-bold uppercase tracking-[0.32em] text-slate-ink/40">Content</span>
+              {CONTENT_TABS.map(t => (
+                <button key={t.id} onClick={() => setActiveTab(t.id)}
+                  className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap border-b-2 px-3 py-3 text-xs font-medium uppercase tracking-[0.13em] transition ${activeTab===t.id ? "border-gold text-navy" : "border-transparent text-slate-ink hover:text-navy"}`}>
+                  <AdminIcon name={t.icon} />{t.label}
+                </button>
+              ))}
+            </div>
+            {/* Row 2: Settings tabs */}
+            <div className="flex items-center overflow-x-auto">
+              <span className="shrink-0 pr-3 text-[9px] font-bold uppercase tracking-[0.32em] text-slate-ink/40">Settings</span>
+              {SETTINGS_TABS.map(t => (
+                <button key={t.id} onClick={() => setActiveTab(t.id)}
+                  className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap border-b-2 px-3 py-3 text-xs font-medium uppercase tracking-[0.13em] transition ${activeTab===t.id ? "border-gold text-navy" : "border-transparent text-slate-ink hover:text-navy"}`}>
+                  <AdminIcon name={t.icon} />{t.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </header>
