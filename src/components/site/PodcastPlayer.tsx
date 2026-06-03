@@ -1,5 +1,5 @@
 export function PodcastPlayer({
-  showId = "0kBKnzeIuiHfPHF2lZBL5R",
+  showId = "4xnDbJFrb1gpwHfyEabZoG",
   height = 352,
 }: {
   showId?: string;

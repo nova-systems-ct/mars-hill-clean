@@ -49,16 +49,16 @@ type BookSeed = Omit<Book, "id">;
 type EpisodeSeed = Omit<Episode, "id">;
 
 export const SEED_PAPERS: PaperSeed[] = [
-  { title: "The Arian Controversy", category: "History", year: "MMXX", summary: "On the fourth-century battle over the divinity of Christ and the Nicene response." },
-  { title: "The Bible vs. the Qur'an", category: "World Religions", year: "MMXXI", summary: "A textual and theological comparison of two competing scriptural canons." },
-  { title: "Critical Race Theory", category: "Culture", year: "MMXXII", summary: "A Reformed evaluation of CRT's underlying anthropology and worldview." },
-  { title: "Islam — A Two-Page Summary", category: "World Religions", year: "MMXX", summary: "A concise primer on Islamic origins, theology, and key apologetic concerns." },
-  { title: "The Kalam Cosmological Argument", category: "Philosophy", year: "MMXXII", summary: "On the classical theistic argument from the universe's beginning." },
-  { title: "Matthew 25 — The Sheep & the Goats", category: "Doctrine", year: "MMXXI", summary: "Exegesis of the great judgment and the identity of 'the least of these.'" },
-  { title: "Radical Two-Kingdom Theology", category: "Doctrine", year: "MMXXII", summary: "An examination and critique of the R2K project within Reformed circles." },
-  { title: "Tacitus, The Annals 15:44", category: "History", year: "MMXX", summary: "Roman testimony to Christ and the early Christian movement." },
-  { title: "The United Pentecostal Church", category: "Doctrine", year: "MMXXI", summary: "Modalism, oneness theology, and the historic doctrine of the Trinity." },
-  { title: "Why God Allows Evil", category: "Philosophy", year: "MMXXIII", summary: "A theodicy rooted in the sovereignty and goodness of God." },
+  { title: "The Arian Controversy", category: "History", year: "MMXX", summary: "On the fourth-century battle over the divinity of Christ and the Nicene response.", pdf_link: "https://marshillapologetics.com/wp-content/uploads/2024/03/arian-controversy.pdf" },
+  { title: "The Bible vs. the Qur'an", category: "World Religions", year: "MMXXI", summary: "A textual and theological comparison of two competing scriptural canons.", pdf_link: "https://marshillapologetics.com/wp-content/uploads/2024/03/bible_vs_quran.pdf" },
+  { title: "Critical Race Theory", category: "Culture", year: "MMXXII", summary: "A Reformed evaluation of CRT's underlying anthropology and worldview.", pdf_link: "https://marshillapologetics.com/wp-content/uploads/2024/03/crt_analytical-toolfinal-1.pdf" },
+  { title: "Islam — A Two-Page Summary", category: "World Religions", year: "MMXX", summary: "A concise primer on Islamic origins, theology, and key apologetic concerns.", pdf_link: "https://marshillapologetics.com/wp-content/uploads/2024/03/precisislam.pdf" },
+  { title: "The Kalam Cosmological Argument", category: "Philosophy", year: "MMXXII", summary: "On the classical theistic argument from the universe's beginning.", pdf_link: "https://marshillapologetics.com/wp-content/uploads/2024/03/kalam_cosmological.pdf" },
+  { title: "Matthew 25 — The Sheep & the Goats", category: "Doctrine", year: "MMXXI", summary: "Exegesis of the great judgment and the identity of 'the least of these.'", pdf_link: "https://marshillapologetics.com/wp-content/uploads/2024/03/final-exegetical-project-matthew-25-.pdf" },
+  { title: "Radical Two-Kingdom Theology", category: "Doctrine", year: "MMXXII", summary: "An examination and critique of the R2K project within Reformed circles.", pdf_link: "https://marshillapologetics.com/wp-content/uploads/2024/03/radical-two-kingdom-theology-.pdf" },
+  { title: "Tacitus, The Annals 15:44", category: "History", year: "MMXX", summary: "Roman testimony to Christ and the early Christian movement.", pdf_link: "https://marshillapologetics.com/wp-content/uploads/2024/03/tacitus_updated2.pdf" },
+  { title: "The United Pentecostal Church", category: "Doctrine", year: "MMXXI", summary: "Modalism, oneness theology, and the historic doctrine of the Trinity.", pdf_link: "https://marshillapologetics.com/wp-content/uploads/2024/03/leonetti-john-why-the-united-pentecostal-church-is-wrong-on-modalism.pdf" },
+  { title: "Why God Allows Evil", category: "Philosophy", year: "MMXXIII", summary: "A theodicy rooted in the sovereignty and goodness of God.", pdf_link: "https://marshillapologetics.com/wp-content/uploads/2024/03/leonetti-john-f19-wgae-.pdf" },
 ];
 
 export const SEED_BOOKS: BookSeed[] = [

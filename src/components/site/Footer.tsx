@@ -1,3 +1,7 @@
+const SPOTIFY = "https://open.spotify.com/show/4xnDbJFrb1gpwHfyEabZoG";
+const YOUTUBE = "https://www.youtube.com/channel/UCIDs8zPms4tbsYJKOu";
+const FACEBOOK = "https://www.facebook.com/marshillapologetics";
+
 export function Footer() {
   return (
     <footer className="relative border-t border-border bg-cloud">
@@ -48,17 +52,12 @@ export function Footer() {
 
             <div className="mt-8 flex gap-3">
               {[
-                { n: "Facebook", url: "https://facebook.com" },
-                { n: "YouTube", url: "https://www.youtube.com/@marshillnewengland2027" },
-                { n: "Spotify", url: "https://open.spotify.com/show/0kBKnzeIuiHfPHF2lZBL5R" },
+                { n: "Facebook", url: FACEBOOK },
+                { n: "YouTube", url: YOUTUBE },
+                { n: "Spotify", url: SPOTIFY },
               ].map((s) => (
-                <a
-                  key={s.n}
-                  href={s.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="rounded-full border border-border px-4 py-2 text-xs uppercase tracking-[0.18em] text-slate-ink transition hover:border-gold hover:text-navy"
-                >
+                <a key={s.n} href={s.url} target="_blank" rel="noreferrer"
+                  className="rounded-full border border-border px-4 py-2 text-xs uppercase tracking-[0.18em] text-slate-ink transition hover:border-gold hover:text-navy">
                   {s.n}
                 </a>
               ))}

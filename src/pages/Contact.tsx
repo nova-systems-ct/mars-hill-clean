@@ -80,19 +80,22 @@ export default function ContactPage() {
               <p className="eyebrow">Follow</p>
               <div className="mt-4 flex flex-wrap gap-3">
                 <a
-                  href="https://www.youtube.com/@marshillnewengland2027"
+                  href="https://www.youtube.com/channel/UCIDs8zPms4tbsYJKOu"
+                  target="_blank" rel="noreferrer"
                   className="rounded-full border border-border bg-white px-4 py-2 text-xs uppercase tracking-[0.18em] text-slate-ink transition hover:border-gold hover:text-navy"
                 >
                   YouTube
                 </a>
                 <a
-                  href="https://open.spotify.com/show/0kBKnzeIuiHfPHF2lZBL5R"
+                  href="https://open.spotify.com/show/4xnDbJFrb1gpwHfyEabZoG"
+                  target="_blank" rel="noreferrer"
                   className="rounded-full border border-border bg-white px-4 py-2 text-xs uppercase tracking-[0.18em] text-slate-ink transition hover:border-gold hover:text-navy"
                 >
                   Spotify
                 </a>
                 <a
-                  href="https://facebook.com"
+                  href="https://www.facebook.com/marshillapologetics"
+                  target="_blank" rel="noreferrer"
                   className="rounded-full border border-border bg-white px-4 py-2 text-xs uppercase tracking-[0.18em] text-slate-ink transition hover:border-gold hover:text-navy"
                 >
                   Facebook
