@@ -89,12 +89,12 @@ export function Podcast() {
             </div>
 
             <ul className="mt-6 divide-y divide-white/10 rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur">
-              {episodes.map((e, idx) => (
+              {episodes.map((e) => (
                 <li
-                  key={idx}
+                  key={e.id}
                   className="group flex items-center gap-6 px-6 py-5 transition hover:bg-white/[0.04]"
                 >
-                  <span className="font-display text-xl text-gold">{e.n}</span>
+                  <span className="font-display text-xl text-gold">{e.number}</span>
                   <p className="flex-1 text-cloud">{e.title}</p>
                   <span className="text-xs uppercase tracking-[0.2em] text-cloud/55">
                     {e.length}

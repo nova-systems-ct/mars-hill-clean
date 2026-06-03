@@ -12,8 +12,7 @@ export function Papers() {
     return papers.filter((p) => {
       const matchesCat = cat === "All" || p.category === cat;
       const q = query.trim().toLowerCase();
-      const matchesQ =
-        !q || p.title.toLowerCase().includes(q) || p.summary.toLowerCase().includes(q);
+      const matchesQ = !q || p.title.toLowerCase().includes(q) || p.summary.toLowerCase().includes(q);
       return matchesCat && matchesQ;
     });
   }, [papers, cat, query]);
@@ -25,24 +24,20 @@ export function Papers() {
           <div className="max-w-2xl">
             <p className="eyebrow">The Library</p>
             <h2 className="mt-5 font-display text-4xl font-light leading-[1.05] text-navy sm:text-5xl lg:text-6xl">
-              Seminary
-              <span className="italic text-gold"> Papers.</span>
+              Seminary<span className="italic text-gold"> Papers.</span>
             </h2>
             <p className="mt-6 text-lg text-slate-ink">
               A working archive of graduate-level theological writing — open to
               the church, freely given for study, prayer, and conversation.
             </p>
           </div>
-
           <div className="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
-            <div className="relative">
-              <input
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search the archive…"
-                className="w-full rounded-full border border-border bg-white/80 px-6 py-3.5 text-sm text-navy placeholder:text-slate-ink/60 focus:border-gold focus:outline-none lg:w-80"
-              />
-            </div>
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search the archive…"
+              className="w-full rounded-full border border-border bg-white/80 px-6 py-3.5 text-sm text-navy placeholder:text-slate-ink/60 focus:border-gold focus:outline-none lg:w-80"
+            />
           </div>
         </div>
 
@@ -51,11 +46,7 @@ export function Papers() {
             <button
               key={c}
               onClick={() => setCat(c)}
-              className={`rounded-full border px-5 py-2 text-xs font-medium uppercase tracking-[0.18em] transition ${
-                cat === c
-                  ? "border-navy bg-navy text-cloud"
-                  : "border-border bg-white/60 text-slate-ink hover:border-gold hover:text-navy"
-              }`}
+              className={`rounded-full border px-5 py-2 text-xs font-medium uppercase tracking-[0.18em] transition ${cat === c ? "border-navy bg-navy text-cloud" : "border-border bg-white/60 text-slate-ink hover:border-gold hover:text-navy"}`}
             >
               {c}
             </button>
@@ -63,32 +54,22 @@ export function Papers() {
         </div>
 
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((p, idx) => (
+          {filtered.map((p) => (
             <article
-              key={idx}
+              key={p.id}
               className="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-white p-7 shadow-soft transition hover:-translate-y-1 hover:border-gold/40 hover:shadow-[var(--shadow-luxe)]"
             >
               <div className="flex items-start justify-between">
-                <span className="rounded-full bg-sky/70 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.2em] text-navy">
-                  {p.category}
-                </span>
-                <span className="font-display text-xs tracking-widest text-slate-ink/60">
-                  {p.year}
-                </span>
+                <span className="rounded-full bg-sky/70 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.2em] text-navy">{p.category}</span>
+                <span className="font-display text-xs tracking-widest text-slate-ink/60">{p.year}</span>
               </div>
-              <h3 className="mt-6 font-display text-2xl leading-tight text-navy">
-                {p.title}
-              </h3>
-              <p className="mt-3 flex-1 text-sm leading-relaxed text-slate-ink">
-                {p.summary}
-              </p>
+              <h3 className="mt-6 font-display text-2xl leading-tight text-navy">{p.title}</h3>
+              <p className="mt-3 flex-1 text-sm leading-relaxed text-slate-ink">{p.summary}</p>
               <div className="mt-8 flex items-center justify-between border-t border-border pt-5">
-                <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-slate-ink">
-                  PDF · A4
-                </span>
-                {p.pdfUrl ? (
+                <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-slate-ink">PDF · A4</span>
+                {p.pdf_link ? (
                   <a
-                    href={p.pdfUrl}
+                    href={p.pdf_link}
                     target="_blank"
                     rel="noreferrer"
                     className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-navy transition group-hover:text-gold"
@@ -106,9 +87,7 @@ export function Papers() {
         </div>
 
         {filtered.length === 0 && (
-          <p className="mt-16 text-center text-sm text-slate-ink">
-            No papers match that search.
-          </p>
+          <p className="mt-16 text-center text-sm text-slate-ink">No papers match that search.</p>
         )}
       </div>
     </section>
