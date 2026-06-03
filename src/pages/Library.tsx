@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
+import { PageMeta } from "@/components/site/PageMeta";
 import { useContent } from "@/context/ContentContext";
 
 const eras = ["All", "Patristic", "Reformation", "Puritan", "Modern", "Apologetics"] as const;
@@ -23,6 +24,11 @@ export default function LibraryPage() {
 
   return (
     <main className="relative min-h-screen bg-background text-foreground">
+      <PageMeta
+        title="Library — Mars Hill Apologetics"
+        description="A working bibliography drawn from the Patristics, the Reformers, the Puritans, and the modern apologists."
+        path="/library"
+      />
       <Nav />
 
       <section className="heaven-bg pt-40 pb-16 lg:pt-48">
@@ -67,30 +73,60 @@ export default function LibraryPage() {
           </div>
 
           <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {list.map((b, idx) => (
-              <li
-                key={idx}
-                className="group rounded-3xl border border-border bg-white p-7 shadow-soft transition hover:-translate-y-1 hover:border-gold hover:shadow-[var(--shadow-luxe)]"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="rounded-full bg-sky/70 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.2em] text-navy">
-                    {b.era}
-                  </span>
-                  <span className="font-display text-xs tracking-widest text-slate-ink/60">
-                    {b.year}
-                  </span>
+            {list.map((b, idx) => {
+              const inner = (
+                <div className="group flex h-full flex-col rounded-3xl border border-border bg-white shadow-soft transition hover:-translate-y-1 hover:border-gold hover:shadow-[var(--shadow-luxe)] overflow-hidden">
+                  {b.cover_url && (
+                    <div className="relative h-52 w-full overflow-hidden bg-sky/20">
+                      <img
+                        src={b.cover_url}
+                        alt={`Cover of ${b.title}`}
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                    </div>
+                  )}
+                  <div className="flex flex-1 flex-col p-7">
+                    <div className="flex items-center justify-between">
+                      <span className="rounded-full bg-sky/70 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.2em] text-navy">
+                        {b.era}
+                      </span>
+                      <span className="font-display text-xs tracking-widest text-slate-ink/60">
+                        {b.year}
+                      </span>
+                    </div>
+                    <h3 className="mt-6 font-display text-2xl leading-snug text-navy">
+                      {b.title}
+                    </h3>
+                    <p className="mt-2 text-sm uppercase tracking-[0.2em] text-gold">
+                      {b.author}
+                    </p>
+                    <p className="mt-4 flex-1 text-sm leading-relaxed text-slate-ink">
+                      {b.note}
+                    </p>
+                    {b.link_url && (
+                      <div className="mt-6 border-t border-border pt-4">
+                        <span className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-navy transition group-hover:text-gold">
+                          View Book →
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <h3 className="mt-6 font-display text-2xl leading-snug text-navy">
-                  {b.title}
-                </h3>
-                <p className="mt-2 text-sm uppercase tracking-[0.2em] text-gold">
-                  {b.author}
-                </p>
-                <p className="mt-4 text-sm leading-relaxed text-slate-ink">
-                  {b.note}
-                </p>
-              </li>
-            ))}
+              );
+
+              return (
+                <li key={idx}>
+                  {b.link_url ? (
+                    <a href={b.link_url} target="_blank" rel="noreferrer" className="block h-full">
+                      {inner}
+                    </a>
+                  ) : (
+                    inner
+                  )}
+                </li>
+              );
+            })}
           </ul>
 
           {list.length === 0 && (

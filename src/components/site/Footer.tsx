@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useContent } from "@/context/ContentContext";
 
 export function Footer() {
@@ -20,15 +21,15 @@ export function Footer() {
           <div className="lg:col-span-3">
             <p className="eyebrow">Explore</p>
             <ul className="mt-5 space-y-3 text-sm text-slate-ink">
-              <li><a href="/about" className="hover:text-navy">About</a></li>
-              <li><a href="/theology-on-tap" className="hover:text-navy">Theology on Tap</a></li>
-              <li><a href="/papers" className="hover:text-navy">Seminary Papers</a></li>
-              <li><a href="/podcast" className="hover:text-navy">Podcast</a></li>
-              <li><a href="/library" className="hover:text-navy">Library</a></li>
-              <li><a href="/blog" className="hover:text-navy">Blog</a></li>
-              <li><a href="/steeped-in-truth" className="hover:text-navy">Steeped in Truth</a></li>
-              <li><a href="/resources" className="hover:text-navy">Resources</a></li>
-              <li><a href="/contact" className="hover:text-navy">Contact</a></li>
+              <li><Link to="/about" className="hover:text-navy transition">About</Link></li>
+              <li><Link to="/theology-on-tap" className="hover:text-navy transition">Theology on Tap</Link></li>
+              <li><Link to="/papers" className="hover:text-navy transition">Seminary Papers</Link></li>
+              <li><Link to="/podcast" className="hover:text-navy transition">Podcast</Link></li>
+              <li><Link to="/library" className="hover:text-navy transition">Library</Link></li>
+              <li><Link to="/blog" className="hover:text-navy transition">Blog</Link></li>
+              <li><Link to="/steeped-in-truth" className="hover:text-navy transition">Steeped in Truth</Link></li>
+              <li><Link to="/resources" className="hover:text-navy transition">Resources</Link></li>
+              <li><Link to="/contact" className="hover:text-navy transition">Contact</Link></li>
             </ul>
           </div>
 
@@ -55,8 +56,8 @@ export function Footer() {
             <div className="mt-8 flex gap-3">
               {[
                 { n: "Facebook", url: FACEBOOK },
-                { n: "YouTube", url: YOUTUBE },
-                { n: "Spotify", url: SPOTIFY },
+                { n: "YouTube",  url: YOUTUBE },
+                { n: "Spotify",  url: SPOTIFY },
               ].map((s) => (
                 <a key={s.n} href={s.url} target="_blank" rel="noreferrer"
                   className="rounded-full border border-border px-4 py-2 text-xs uppercase tracking-[0.18em] text-slate-ink transition hover:border-gold hover:text-navy">
@@ -71,7 +72,7 @@ export function Footer() {
 
         <div className="mt-8 flex flex-col items-start justify-between gap-4 text-xs uppercase tracking-[0.22em] text-slate-ink sm:flex-row sm:items-center">
           <p>© {new Date().getFullYear()} Mars Hill Apologetics</p>
-          <p>defender315@msn.com</p>
+          <a href="mailto:defender315@msn.com" className="hover:text-navy transition">defender315@msn.com</a>
           <p>Soli Deo Gloria</p>
         </div>
       </div>

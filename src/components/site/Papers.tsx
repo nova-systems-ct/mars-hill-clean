@@ -54,36 +54,38 @@ export function Papers() {
         </div>
 
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((p) => (
-            <article
-              key={p.id}
-              className="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-white p-7 shadow-soft transition hover:-translate-y-1 hover:border-gold/40 hover:shadow-[var(--shadow-luxe)]"
-            >
-              <div className="flex items-start justify-between">
-                <span className="rounded-full bg-sky/70 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.2em] text-navy">{p.category}</span>
-                <span className="font-display text-xs tracking-widest text-slate-ink/60">{p.year}</span>
-              </div>
-              <h3 className="mt-6 font-display text-2xl leading-tight text-navy">{p.title}</h3>
-              <p className="mt-3 flex-1 text-sm leading-relaxed text-slate-ink">{p.summary}</p>
-              <div className="mt-8 flex items-center justify-between border-t border-border pt-5">
-                <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-slate-ink">PDF · A4</span>
-                {p.pdf_link ? (
-                  <a
-                    href={p.pdf_link}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-navy transition group-hover:text-gold"
-                  >
-                    Read paper <span className="transition-transform group-hover:translate-x-1">→</span>
-                  </a>
-                ) : (
+          {filtered.map((p) => {
+            const card = (
+              <article
+                className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-white p-7 shadow-soft transition hover:-translate-y-1 hover:border-gold/40 hover:shadow-[var(--shadow-luxe)]"
+              >
+                <div className="flex items-start justify-between">
+                  <span className="rounded-full bg-sky/70 px-3 py-1 text-[10px] font-medium uppercase tracking-[0.2em] text-navy">{p.category}</span>
+                  <span className="font-display text-xs tracking-widest text-slate-ink/60">{p.year}</span>
+                </div>
+                <h3 className="mt-6 font-display text-2xl leading-tight text-navy">{p.title}</h3>
+                <p className="mt-3 flex-1 text-sm leading-relaxed text-slate-ink">{p.summary}</p>
+                <div className="mt-8 flex items-center justify-between border-t border-border pt-5">
+                  <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-slate-ink">PDF · A4</span>
                   <span className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-navy transition group-hover:text-gold">
                     Read paper <span className="transition-transform group-hover:translate-x-1">→</span>
                   </span>
+                </div>
+              </article>
+            );
+
+            return (
+              <div key={p.id}>
+                {p.pdf_link ? (
+                  <a href={p.pdf_link} target="_blank" rel="noreferrer" className="block h-full">
+                    {card}
+                  </a>
+                ) : (
+                  card
                 )}
               </div>
-            </article>
-          ))}
+            );
+          })}
         </div>
 
         {filtered.length === 0 && (

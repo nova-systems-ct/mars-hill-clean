@@ -135,8 +135,11 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
 const PAPER_CATS: PaperCategory[] = ["Doctrine","World Religions","Culture","History","Philosophy"];
 
 function PapersManager() {
-  const { papers, addPaper, deletePaper, resetPapers, loading, dbError } = useContent();
-  const [form, setForm] = useState({ title:"", category:"Doctrine" as PaperCategory, year:"", summary:"", pdf_link:"" });
+  const { papers, addPaper, updatePaper, deletePaper, resetPapers, loading, dbError } = useContent();
+  const blank = { title:"", category:"Doctrine" as PaperCategory, year:"", summary:"", pdf_link:"" };
+  const [form, setForm] = useState(blank);
+  const [editId, setEditId] = useState<string|null>(null);
+  const [editForm, setEditForm] = useState(blank);
   const [busy, setBusy] = useState(false);
   const [flash, setFlash] = useFlash();
 
@@ -144,8 +147,13 @@ function PapersManager() {
     e.preventDefault(); if (!form.title||!form.summary) return;
     setBusy(true);
     await addPaper({ title:form.title, category:form.category, year:form.year||new Date().getFullYear().toString(), summary:form.summary, pdf_link:form.pdf_link||null });
-    setForm({ title:"", category:"Doctrine", year:"", summary:"", pdf_link:"" });
-    setFlash("Added ✓"); setBusy(false);
+    setForm(blank); setFlash("Added ✓"); setBusy(false);
+  };
+  const startEdit = (p: Paper) => { setEditId(p.id); setEditForm({ title:p.title, category:p.category, year:p.year, summary:p.summary, pdf_link:p.pdf_link||"" }); };
+  const saveEdit = async () => {
+    if (!editId) return; setBusy(true);
+    await updatePaper(editId, { title:editForm.title, category:editForm.category, year:editForm.year, summary:editForm.summary, pdf_link:editForm.pdf_link||null });
+    setEditId(null); setFlash("Saved ✓"); setBusy(false);
   };
 
   return (
@@ -170,13 +178,31 @@ function PapersManager() {
           {loading ? <LoadingList /> : (
             <ul className="mt-4 divide-y divide-border">
               {papers.map((p: Paper)=>(
-                <li key={p.id} className="flex items-start gap-4 py-4">
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate font-medium text-navy">{p.title}</p>
-                    <p className="text-xs uppercase tracking-[0.18em] text-gold">{p.category} · {p.year}</p>
-                    {p.pdf_link && <a href={p.pdf_link} target="_blank" rel="noreferrer" className="block truncate text-xs text-slate-ink hover:text-navy">{p.pdf_link}</a>}
-                  </div>
-                  <button onClick={async()=>{if(confirm(`Delete "${p.title}"?`)){ setBusy(true); await deletePaper(p.id); setFlash("Deleted ✓"); setBusy(false); }}} disabled={busy} className={btnDanger}>Delete</button>
+                <li key={p.id} className="py-4">
+                  {editId===p.id ? (
+                    <div className="space-y-3 rounded-2xl border border-gold/30 bg-sky/20 p-4">
+                      <input value={editForm.title} onChange={e=>setEditForm(f=>({...f,title:e.target.value}))} className={inputCls} placeholder="Title" />
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        <select value={editForm.category} onChange={e=>setEditForm(f=>({...f,category:e.target.value as PaperCategory}))} className={inputCls}>{PAPER_CATS.map(c=><option key={c}>{c}</option>)}</select>
+                        <input value={editForm.year} onChange={e=>setEditForm(f=>({...f,year:e.target.value}))} className={inputCls} placeholder="MMXXIV" />
+                      </div>
+                      <textarea value={editForm.summary} onChange={e=>setEditForm(f=>({...f,summary:e.target.value}))} rows={3} className={areaCls} placeholder="Summary" />
+                      <input type="url" value={editForm.pdf_link} onChange={e=>setEditForm(f=>({...f,pdf_link:e.target.value}))} className={inputCls} placeholder="https://…" />
+                      <Row><button onClick={saveEdit} disabled={busy} className={btnPrimary}>Save</button><button onClick={()=>setEditId(null)} className={btnGhost}>Cancel</button></Row>
+                    </div>
+                  ) : (
+                    <div className="flex items-start gap-4">
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate font-medium text-navy">{p.title}</p>
+                        <p className="text-xs uppercase tracking-[0.18em] text-gold">{p.category} · {p.year}</p>
+                        {p.pdf_link && <a href={p.pdf_link} target="_blank" rel="noreferrer" className="block truncate text-xs text-slate-ink hover:text-navy">{p.pdf_link}</a>}
+                      </div>
+                      <div className="flex shrink-0 gap-3">
+                        <button onClick={()=>startEdit(p)} className={btnSecondary}>Edit</button>
+                        <button onClick={async()=>{if(confirm(`Delete "${p.title}"?`)){ setBusy(true); await deletePaper(p.id); setFlash("Deleted ✓"); setBusy(false); }}} disabled={busy} className={btnDanger}>Delete</button>
+                      </div>
+                    </div>
+                  )}
                 </li>
               ))}
             </ul>
@@ -192,21 +218,34 @@ function PapersManager() {
 const BOOK_ERAS: BookEra[] = ["Patristic","Reformation","Puritan","Modern","Apologetics"];
 
 function LibraryManager() {
-  const { books, addBook, deleteBook, resetBooks, loading, dbError } = useContent();
-  const [form, setForm] = useState({ title:"", author:"", era:"Modern" as BookEra, year:"", note:"" });
+  const { books, addBook, updateBook, deleteBook, resetBooks, loading, dbError } = useContent();
+  const blankBook = { title:"", author:"", era:"Modern" as BookEra, year:"", note:"", cover_url:"", link_url:"" };
+  const [form, setForm] = useState(blankBook);
+  const [editId, setEditId] = useState<string|null>(null);
+  const [editForm, setEditForm] = useState(blankBook);
   const [busy, setBusy] = useState(false);
   const [flash, setFlash] = useFlash();
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault(); if (!form.title||!form.author) return;
-    setBusy(true); await addBook(form);
-    setForm({ title:"", author:"", era:"Modern", year:"", note:"" });
-    setFlash("Added ✓"); setBusy(false);
+    setBusy(true);
+    await addBook({ title:form.title, author:form.author, era:form.era, year:form.year, note:form.note, cover_url:form.cover_url||null, link_url:form.link_url||null });
+    setForm(blankBook); setFlash("Added ✓"); setBusy(false);
+  };
+  const startEdit = (b: Book) => { setEditId(b.id); setEditForm({ title:b.title, author:b.author, era:b.era, year:b.year, note:b.note, cover_url:b.cover_url||"", link_url:b.link_url||"" }); };
+  const saveEdit = async () => {
+    if (!editId) return; setBusy(true);
+    await updateBook(editId, { title:editForm.title, author:editForm.author, era:editForm.era, year:editForm.year, note:editForm.note, cover_url:editForm.cover_url||null, link_url:editForm.link_url||null });
+    setEditId(null); setFlash("Saved ✓"); setBusy(false);
   };
 
   return (
     <div className="space-y-8">
       {dbError && <DbError msg={dbError} />}
+      <div className="rounded-2xl border border-gold/20 bg-sky/10 px-5 py-3 text-xs text-slate-ink">
+        <strong className="text-navy">New fields:</strong> To enable Cover Image and PDF/Link fields, run in Supabase SQL Editor:
+        <code className="ml-2 rounded bg-sky/40 px-2 py-0.5 font-mono text-[10px]">ALTER TABLE library ADD COLUMN IF NOT EXISTS cover_url TEXT; ALTER TABLE library ADD COLUMN IF NOT EXISTS link_url TEXT;</code>
+      </div>
       <div className="grid gap-10 lg:grid-cols-2">
         <div>
           <h2 className="font-display text-2xl text-navy">Add a Book</h2>
@@ -218,6 +257,8 @@ function LibraryManager() {
               <Field label="Year"><input value={form.year} onChange={e=>setForm(f=>({...f,year:e.target.value}))} className={inputCls} placeholder="1559" /></Field>
             </div>
             <Field label="Note"><textarea value={form.note} onChange={e=>setForm(f=>({...f,note:e.target.value}))} rows={2} className={areaCls} placeholder="One sentence description…" /></Field>
+            <Field label="Cover Image URL"><input type="url" value={form.cover_url} onChange={e=>setForm(f=>({...f,cover_url:e.target.value}))} className={inputCls} placeholder="https://…/cover.jpg" /></Field>
+            <Field label="PDF or Buy Link"><input type="url" value={form.link_url} onChange={e=>setForm(f=>({...f,link_url:e.target.value}))} className={inputCls} placeholder="https://amazon.com/…" /></Field>
             <Row><button type="submit" disabled={busy||loading} className={btnPrimary}>{busy?"Saving…":"Add Book"}</button><Flash msg={flash} /></Row>
           </form>
         </div>
@@ -226,12 +267,33 @@ function LibraryManager() {
           {loading ? <LoadingList /> : (
             <ul className="mt-4 divide-y divide-border">
               {books.map((b: Book)=>(
-                <li key={b.id} className="flex items-start gap-4 py-4">
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate font-medium text-navy">{b.title}</p>
-                    <p className="text-xs uppercase tracking-[0.18em] text-gold">{b.author} · {b.era} · {b.year}</p>
-                  </div>
-                  <button onClick={async()=>{if(confirm(`Delete "${b.title}"?`)){ setBusy(true); await deleteBook(b.id); setFlash("Deleted ✓"); setBusy(false); }}} disabled={busy} className={btnDanger}>Delete</button>
+                <li key={b.id} className="py-4">
+                  {editId===b.id ? (
+                    <div className="space-y-3 rounded-2xl border border-gold/30 bg-sky/20 p-4">
+                      <input value={editForm.title} onChange={e=>setEditForm(f=>({...f,title:e.target.value}))} className={inputCls} placeholder="Title" />
+                      <input value={editForm.author} onChange={e=>setEditForm(f=>({...f,author:e.target.value}))} className={inputCls} placeholder="Author" />
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        <select value={editForm.era} onChange={e=>setEditForm(f=>({...f,era:e.target.value as BookEra}))} className={inputCls}>{BOOK_ERAS.map(e=><option key={e}>{e}</option>)}</select>
+                        <input value={editForm.year} onChange={e=>setEditForm(f=>({...f,year:e.target.value}))} className={inputCls} placeholder="Year" />
+                      </div>
+                      <textarea value={editForm.note} onChange={e=>setEditForm(f=>({...f,note:e.target.value}))} rows={2} className={areaCls} placeholder="Note" />
+                      <input type="url" value={editForm.cover_url} onChange={e=>setEditForm(f=>({...f,cover_url:e.target.value}))} className={inputCls} placeholder="Cover image URL" />
+                      <input type="url" value={editForm.link_url} onChange={e=>setEditForm(f=>({...f,link_url:e.target.value}))} className={inputCls} placeholder="PDF or buy link" />
+                      <Row><button onClick={saveEdit} disabled={busy} className={btnPrimary}>Save</button><button onClick={()=>setEditId(null)} className={btnGhost}>Cancel</button></Row>
+                    </div>
+                  ) : (
+                    <div className="flex items-start gap-4">
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate font-medium text-navy">{b.title}</p>
+                        <p className="text-xs uppercase tracking-[0.18em] text-gold">{b.author} · {b.era} · {b.year}</p>
+                        {b.link_url && <a href={b.link_url} target="_blank" rel="noreferrer" className="block truncate text-xs text-slate-ink hover:text-navy">{b.link_url}</a>}
+                      </div>
+                      <div className="flex shrink-0 gap-3">
+                        <button onClick={()=>startEdit(b)} className={btnSecondary}>Edit</button>
+                        <button onClick={async()=>{if(confirm(`Delete "${b.title}"?`)){ setBusy(true); await deleteBook(b.id); setFlash("Deleted ✓"); setBusy(false); }}} disabled={busy} className={btnDanger}>Delete</button>
+                      </div>
+                    </div>
+                  )}
                 </li>
               ))}
             </ul>
@@ -245,8 +307,11 @@ function LibraryManager() {
 // ── Podcast manager ────────────────────────────────────────────────────────────
 
 function PodcastManager() {
-  const { episodes, addEpisode, deleteEpisode, resetEpisodes, loading, dbError } = useContent();
-  const [form, setForm] = useState({ number:"", title:"", length:"" });
+  const { episodes, addEpisode, updateEpisode, deleteEpisode, resetEpisodes, loading, dbError } = useContent();
+  const blankEp = { number:"", title:"", length:"" };
+  const [form, setForm] = useState(blankEp);
+  const [editId, setEditId] = useState<string|null>(null);
+  const [editForm, setEditForm] = useState(blankEp);
   const [busy, setBusy] = useState(false);
   const [flash, setFlash] = useFlash();
   const nextNum = String(episodes.length+1).padStart(2,"0");
@@ -254,7 +319,12 @@ function PodcastManager() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault(); if (!form.title) return;
     setBusy(true); await addEpisode({ number:form.number||nextNum, title:form.title, length:form.length||"— min" });
-    setForm({ number:"", title:"", length:"" }); setFlash("Added ✓"); setBusy(false);
+    setForm(blankEp); setFlash("Added ✓"); setBusy(false);
+  };
+  const startEdit = (ep: Episode) => { setEditId(ep.id); setEditForm({ number:ep.number, title:ep.title, length:ep.length }); };
+  const saveEdit = async () => {
+    if (!editId) return; setBusy(true);
+    await updateEpisode(editId, editForm); setEditId(null); setFlash("Saved ✓"); setBusy(false);
   };
 
   return (
@@ -277,10 +347,26 @@ function PodcastManager() {
           {loading ? <LoadingList /> : (
             <ul className="mt-4 divide-y divide-border">
               {episodes.map((ep: Episode)=>(
-                <li key={ep.id} className="flex items-center gap-4 py-4">
-                  <span className="font-display text-xl text-gold">{ep.number}</span>
-                  <div className="min-w-0 flex-1"><p className="truncate font-medium text-navy">{ep.title}</p><p className="text-xs uppercase tracking-[0.18em] text-slate-ink">{ep.length}</p></div>
-                  <button onClick={async()=>{if(confirm(`Delete "${ep.title}"?`)){ setBusy(true); await deleteEpisode(ep.id); setFlash("Deleted ✓"); setBusy(false); }}} disabled={busy} className={btnDanger}>Delete</button>
+                <li key={ep.id} className="py-4">
+                  {editId===ep.id ? (
+                    <div className="space-y-3 rounded-2xl border border-gold/30 bg-sky/20 p-4">
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        <input value={editForm.number} onChange={e=>setEditForm(f=>({...f,number:e.target.value}))} className={inputCls} placeholder="01" />
+                        <input value={editForm.length} onChange={e=>setEditForm(f=>({...f,length:e.target.value}))} className={inputCls} placeholder="42 min" />
+                      </div>
+                      <input value={editForm.title} onChange={e=>setEditForm(f=>({...f,title:e.target.value}))} className={inputCls} placeholder="Title" />
+                      <Row><button onClick={saveEdit} disabled={busy} className={btnPrimary}>Save</button><button onClick={()=>setEditId(null)} className={btnGhost}>Cancel</button></Row>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-4">
+                      <span className="font-display text-xl text-gold">{ep.number}</span>
+                      <div className="min-w-0 flex-1"><p className="truncate font-medium text-navy">{ep.title}</p><p className="text-xs uppercase tracking-[0.18em] text-slate-ink">{ep.length}</p></div>
+                      <div className="flex shrink-0 gap-3">
+                        <button onClick={()=>startEdit(ep)} className={btnSecondary}>Edit</button>
+                        <button onClick={async()=>{if(confirm(`Delete "${ep.title}"?`)){ setBusy(true); await deleteEpisode(ep.id); setFlash("Deleted ✓"); setBusy(false); }}} disabled={busy} className={btnDanger}>Delete</button>
+                      </div>
+                    </div>
+                  )}
                 </li>
               ))}
             </ul>
@@ -297,7 +383,7 @@ const EVENT_TYPES: EventType[] = ["in-person","zoom","hybrid"];
 
 function EventsManager() {
   const { events, addEvent, updateEvent, deleteEvent, resetEvents, loading, dbError } = useContent();
-  const blank = { title:"", date_text:"", location:"", type:"in-person" as EventType };
+  const blank = { title:"", date_text:"", location:"", type:"in-person" as EventType, zoom_link:"" };
   const [form, setForm] = useState(blank);
   const [editId, setEditId] = useState<string|null>(null);
   const [editForm, setEditForm] = useState(blank);
@@ -306,18 +392,23 @@ function EventsManager() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault(); if (!form.title) return;
-    setBusy(true); await addEvent(form);
+    setBusy(true); await addEvent({ title:form.title, date_text:form.date_text, location:form.location, type:form.type, zoom_link:form.zoom_link||null });
     setForm(blank); setFlash("Added ✓"); setBusy(false);
   };
-  const startEdit = (ev: Event) => { setEditId(ev.id); setEditForm({ title:ev.title, date_text:ev.date_text, location:ev.location, type:ev.type }); };
+  const startEdit = (ev: Event) => { setEditId(ev.id); setEditForm({ title:ev.title, date_text:ev.date_text, location:ev.location, type:ev.type, zoom_link:ev.zoom_link||"" }); };
   const saveEdit = async () => {
     if (!editId) return; setBusy(true);
-    await updateEvent(editId, editForm); setEditId(null); setFlash("Saved ✓"); setBusy(false);
+    await updateEvent(editId, { title:editForm.title, date_text:editForm.date_text, location:editForm.location, type:editForm.type, zoom_link:editForm.zoom_link||null });
+    setEditId(null); setFlash("Saved ✓"); setBusy(false);
   };
 
   return (
     <div className="space-y-8">
       {dbError && <DbError msg={dbError} />}
+      <div className="rounded-2xl border border-gold/20 bg-sky/10 px-5 py-3 text-xs text-slate-ink">
+        <strong className="text-navy">Zoom Link field:</strong> To enable the Zoom Link field, run in Supabase SQL Editor:
+        <code className="ml-2 rounded bg-sky/40 px-2 py-0.5 font-mono text-[10px]">ALTER TABLE events ADD COLUMN IF NOT EXISTS zoom_link TEXT;</code>
+      </div>
       <div className="grid gap-10 lg:grid-cols-2">
         <div>
           <h2 className="font-display text-2xl text-navy">Add an Event</h2>
@@ -328,6 +419,7 @@ function EventsManager() {
               <Field label="Type"><select value={form.type} onChange={e=>setForm(f=>({...f,type:e.target.value as EventType}))} className={inputCls}>{EVENT_TYPES.map(t=><option key={t} value={t}>{t}</option>)}</select></Field>
             </div>
             <Field label="Location / Notes"><input value={form.location} onChange={e=>setForm(f=>({...f,location:e.target.value}))} className={inputCls} placeholder="In Person · CT" /></Field>
+            <Field label="Zoom Link (optional)"><input type="url" value={form.zoom_link} onChange={e=>setForm(f=>({...f,zoom_link:e.target.value}))} className={inputCls} placeholder="https://zoom.us/j/…" /></Field>
             <Row><button type="submit" disabled={busy||loading} className={btnPrimary}>{busy?"Saving…":"Add Event"}</button><Flash msg={flash} /></Row>
           </form>
         </div>
@@ -345,6 +437,7 @@ function EventsManager() {
                         <select value={editForm.type} onChange={e=>setEditForm(f=>({...f,type:e.target.value as EventType}))} className={inputCls}>{EVENT_TYPES.map(t=><option key={t} value={t}>{t}</option>)}</select>
                       </div>
                       <input value={editForm.location} onChange={e=>setEditForm(f=>({...f,location:e.target.value}))} className={inputCls} placeholder="Location" />
+                      <input type="url" value={editForm.zoom_link} onChange={e=>setEditForm(f=>({...f,zoom_link:e.target.value}))} className={inputCls} placeholder="Zoom link (optional)" />
                       <Row><button onClick={saveEdit} disabled={busy} className={btnPrimary}>Save</button><button onClick={()=>setEditId(null)} className={btnGhost}>Cancel</button></Row>
                     </div>
                   ) : (

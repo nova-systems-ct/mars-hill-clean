@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
+import { PageMeta } from "@/components/site/PageMeta";
 import { useContent } from "@/context/ContentContext";
 
 const otherClubs = [
@@ -21,6 +22,11 @@ export default function SteepedInTruth() {
 
   return (
     <main className="relative min-h-screen bg-background text-foreground">
+      <PageMeta
+        title="Steeped in Truth — Mars Hill Apologetics"
+        description="A women's book club gathering around Scripture, sisterhood, and the great Christian classics — reading slowly, thinking deeply."
+        path="/steeped-in-truth"
+      />
       <Nav />
 
       <section className="relative overflow-hidden heaven-bg pt-40 pb-24 lg:pt-48 lg:pb-32">

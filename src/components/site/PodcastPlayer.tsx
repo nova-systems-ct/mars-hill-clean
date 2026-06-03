@@ -1,10 +1,12 @@
+interface PodcastPlayerProps {
+  showId?: string;
+  height?: number;
+}
+
 export function PodcastPlayer({
   showId = "4xnDbJFrb1gpwHfyEabZoG",
   height = 352,
-}: {
-  showId?: string;
-  height?: number;
-}) {
+}: PodcastPlayerProps) {
   return (
     <div className="overflow-hidden rounded-3xl ring-1 ring-white/10 shadow-[var(--shadow-luxe)]">
       <iframe
@@ -13,9 +15,11 @@ export function PodcastPlayer({
         width="100%"
         height={height}
         frameBorder={0}
-        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-        loading="lazy"
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture; web-share"
+        allowFullScreen
+        loading="eager"
         className="block"
+        style={{ minHeight: height }}
       />
     </div>
   );

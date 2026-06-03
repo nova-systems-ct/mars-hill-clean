@@ -1,6 +1,7 @@
 import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
 import { PodcastPlayer } from "@/components/site/PodcastPlayer";
+import { PageMeta } from "@/components/site/PageMeta";
 import { useContent } from "@/context/ContentContext";
 
 export default function PodcastPage() {
@@ -9,8 +10,17 @@ export default function PodcastPage() {
   const YOUTUBE  = getSetting("youtube_url",  "https://www.youtube.com/channel/UCIDs8zPms4tbsYJKOu");
   const FACEBOOK = getSetting("facebook_url", "https://www.facebook.com/marshillapologetics");
 
+  const showId = SPOTIFY.includes("open.spotify.com/show/")
+    ? SPOTIFY.split("open.spotify.com/show/")[1].split("?")[0]
+    : "4xnDbJFrb1gpwHfyEabZoG";
+
   return (
     <main className="relative min-h-screen bg-background text-foreground">
+      <PageMeta
+        title="Podcast — Reformed Reference — Mars Hill Apologetics"
+        description="A weekly study where the wisdom of the great Reformed theologians echoes through the ages — Calvin, Luther, Warfield, and Machen."
+        path="/podcast"
+      />
       <Nav />
 
       {/* Hero + Spotify embed */}
@@ -51,13 +61,13 @@ export default function PodcastPage() {
             </div>
 
             <div className="lg:col-span-8">
-              <PodcastPlayer height={460} />
+              <PodcastPlayer showId={showId} height={460} />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Episode list — single, canonical list */}
+      {/* Episode list */}
       <section className="relative navy-bg pb-32 text-cloud lg:pb-40">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_15%_80%,color-mix(in_oklab,var(--sky)_12%,transparent)_0%,transparent_60%)]" />
         <div className="relative mx-auto max-w-4xl px-6 lg:px-10">

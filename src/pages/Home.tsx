@@ -4,6 +4,7 @@ import { Hero } from "@/components/site/Hero";
 import { Vision } from "@/components/site/Vision";
 import { Footer } from "@/components/site/Footer";
 import { PodcastPlayer } from "@/components/site/PodcastPlayer";
+import { PageMeta } from "@/components/site/PageMeta";
 import { useContent } from "@/context/ContentContext";
 import founder from "@/assets/founder-new.jpg";
 import tot from "@/assets/tot.jpg";
@@ -12,9 +13,17 @@ export default function Home() {
   const { papers, events, getSetting } = useContent();
   const featuredPapers = papers.slice(0, 3);
   const spotifyUrl = getSetting("spotify_url", "https://open.spotify.com/show/4xnDbJFrb1gpwHfyEabZoG");
+  const spotifyShowId = spotifyUrl.includes("open.spotify.com/show/")
+    ? spotifyUrl.split("open.spotify.com/show/")[1].split("?")[0]
+    : "4xnDbJFrb1gpwHfyEabZoG";
 
   return (
     <main className="relative min-h-screen bg-background text-foreground">
+      <PageMeta
+        title="Mars Hill Apologetics — Defending Truth. Pursuing Wisdom."
+        description="A Reformed apologetics ministry by John Leonetti — home of Theology on Tap, the Reformed Reference Podcast, and a seminary paper archive."
+        path="/"
+      />
       <Nav />
       <Hero />
 
@@ -162,8 +171,11 @@ export default function Home() {
 
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {featuredPapers.map((p, idx) => (
-              <article
+              <a
                 key={idx}
+                href={p.pdf_link ?? "/papers"}
+                target={p.pdf_link ? "_blank" : undefined}
+                rel={p.pdf_link ? "noreferrer" : undefined}
                 className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-white p-7 shadow-soft transition hover:-translate-y-1 hover:border-gold/40 hover:shadow-[var(--shadow-luxe)]"
               >
                 <div className="flex items-start justify-between">
@@ -181,7 +193,7 @@ export default function Home() {
                     Read paper <span className="transition-transform group-hover:translate-x-1">→</span>
                   </span>
                 </div>
-              </article>
+              </a>
             ))}
           </div>
         </div>
@@ -214,7 +226,7 @@ export default function Home() {
               </div>
             </div>
             <div className="lg:col-span-8">
-              <PodcastPlayer height={232} />
+              <PodcastPlayer showId={spotifyShowId} height={232} />
             </div>
           </div>
 

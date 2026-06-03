@@ -8,9 +8,9 @@ export type BookEra = "Patristic" | "Reformation" | "Puritan" | "Modern" | "Apol
 export type EventType = "in-person" | "zoom" | "hybrid";
 
 export type Paper   = { id: string; title: string; category: PaperCategory; year: string; summary: string; pdf_link?: string | null; };
-export type Book    = { id: string; title: string; author: string; era: BookEra; year: string; note: string; };
+export type Book    = { id: string; title: string; author: string; era: BookEra; year: string; note: string; cover_url?: string | null; link_url?: string | null; };
 export type Episode = { id: string; number: string; title: string; length: string; };
-export type Event   = { id: string; title: string; date_text: string; location: string; type: EventType; };
+export type Event   = { id: string; title: string; date_text: string; location: string; type: EventType; zoom_link?: string | null; };
 export type BlogPost = { id: string; title: string; category: string; date_text: string; summary: string; content: string; image_url?: string | null; };
 export type SiteSettings = Record<string, string>;
 
@@ -102,14 +102,17 @@ type Ctx = {
   loading: boolean;   dbError: string | null;
   // papers
   addPaper: (p: PaperSeed) => Promise<void>;
+  updatePaper: (id: string, data: Partial<PaperSeed>) => Promise<void>;
   deletePaper: (id: string) => Promise<void>;
   resetPapers: () => Promise<void>;
   // books
   addBook: (b: BookSeed) => Promise<void>;
+  updateBook: (id: string, data: Partial<BookSeed>) => Promise<void>;
   deleteBook: (id: string) => Promise<void>;
   resetBooks: () => Promise<void>;
   // episodes
   addEpisode: (e: EpisodeSeed) => Promise<void>;
+  updateEpisode: (id: string, data: Partial<EpisodeSeed>) => Promise<void>;
   deleteEpisode: (id: string) => Promise<void>;
   resetEpisodes: () => Promise<void>;
   // events
@@ -196,6 +199,10 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
     const { data, error } = await supabase.from("papers").insert([p]).select().single();
     if (!error && data) setPapers(prev => [...prev, data as Paper]);
   };
+  const updatePaper = async (id: string, data: Partial<PaperSeed>) => {
+    const { error } = await supabase.from("papers").update(data).eq("id", id);
+    if (!error) setPapers(prev => prev.map(p => p.id === id ? { ...p, ...data } : p));
+  };
   const deletePaper = async (id: string) => {
     const { error } = await supabase.from("papers").delete().eq("id", id);
     if (!error) setPapers(prev => prev.filter(p => p.id !== id));
@@ -211,6 +218,10 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
     const { data, error } = await supabase.from("library").insert([b]).select().single();
     if (!error && data) setBooks(prev => [...prev, data as Book]);
   };
+  const updateBook = async (id: string, data: Partial<BookSeed>) => {
+    const { error } = await supabase.from("library").update(data).eq("id", id);
+    if (!error) setBooks(prev => prev.map(b => b.id === id ? { ...b, ...data } : b));
+  };
   const deleteBook = async (id: string) => {
     const { error } = await supabase.from("library").delete().eq("id", id);
     if (!error) setBooks(prev => prev.filter(b => b.id !== id));
@@ -225,6 +236,10 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
   const addEpisode = async (e: EpisodeSeed) => {
     const { data, error } = await supabase.from("episodes").insert([e]).select().single();
     if (!error && data) setEpisodes(prev => [...prev, data as Episode]);
+  };
+  const updateEpisode = async (id: string, data: Partial<EpisodeSeed>) => {
+    const { error } = await supabase.from("episodes").update(data).eq("id", id);
+    if (!error) setEpisodes(prev => prev.map(e => e.id === id ? { ...e, ...data } : e));
   };
   const deleteEpisode = async (id: string) => {
     const { error } = await supabase.from("episodes").delete().eq("id", id);
@@ -299,9 +314,9 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
   return (
     <ContentContext.Provider value={{
       papers, books, episodes, events, blogPosts, settings, loading, dbError,
-      addPaper, deletePaper, resetPapers,
-      addBook, deleteBook, resetBooks,
-      addEpisode, deleteEpisode, resetEpisodes,
+      addPaper, updatePaper, deletePaper, resetPapers,
+      addBook, updateBook, deleteBook, resetBooks,
+      addEpisode, updateEpisode, deleteEpisode, resetEpisodes,
       addEvent, updateEvent, deleteEvent, resetEvents,
       addBlogPost, updateBlogPost, deleteBlogPost,
       updateSetting, updateSettings, getSetting, resetSettings,

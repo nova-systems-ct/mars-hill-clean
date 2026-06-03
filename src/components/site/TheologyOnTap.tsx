@@ -57,13 +57,24 @@ export function TheologyOnTap() {
               </div>
               <ul className="mt-6 divide-y divide-white/10">
                 {events.map((e) => (
-                  <li key={e.id} className="group flex items-center gap-6 py-5 transition hover:pl-2">
-                    <div className="w-16 shrink-0 font-display text-2xl text-gold">{e.date_text}</div>
-                    <div className="flex-1">
-                      <p className="font-medium text-cloud">{e.title}</p>
-                      <p className="text-xs uppercase tracking-[0.18em] text-cloud/55">{e.location}</p>
+                  <li key={e.id} className="py-5">
+                    <div className="flex items-start gap-6">
+                      <div className="w-16 shrink-0 font-display text-2xl text-gold">{e.date_text}</div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-cloud">{e.title}</p>
+                        <p className="text-xs uppercase tracking-[0.18em] text-cloud/55">{e.location}</p>
+                        {e.zoom_link && (
+                          <a
+                            href={e.zoom_link}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="mt-2 inline-flex items-center gap-2 rounded-full bg-sky/20 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] text-sky transition hover:bg-sky/30"
+                          >
+                            Join Zoom →
+                          </a>
+                        )}
+                      </div>
                     </div>
-                    <span className="text-cloud/40 transition group-hover:translate-x-1 group-hover:text-gold">→</span>
                   </li>
                 ))}
               </ul>
