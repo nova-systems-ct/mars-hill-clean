@@ -11,7 +11,7 @@ export type Paper   = { id: string; title: string; category: PaperCategory; year
 export type Book    = { id: string; title: string; author: string; era: BookEra; year: string; note: string; };
 export type Episode = { id: string; number: string; title: string; length: string; };
 export type Event   = { id: string; title: string; date_text: string; location: string; type: EventType; };
-export type BlogPost = { id: string; title: string; category: string; date_text: string; summary: string; content: string; };
+export type BlogPost = { id: string; title: string; category: string; date_text: string; summary: string; content: string; image_url?: string | null; };
 export type SiteSettings = Record<string, string>;
 
 type PaperSeed    = Omit<Paper, "id">;
@@ -64,12 +64,12 @@ export const SEED_EVENTS: EventSeed[] = [
 ];
 
 export const SEED_BLOG_POSTS: BlogPostSeed[] = [
-  { title: "On the Knowledge of God", category: "Theology", date_text: "May 28, 2026", summary: "Calvin opens the Institutes with a hinge: we cannot know ourselves without knowing God, nor God without knowing ourselves. A meditation.", content: "" },
-  { title: "The Kalam Argument, Revisited", category: "Apologetics", date_text: "May 14, 2026", summary: "A short defense of the second premise — that the universe began to exist — drawing on contemporary cosmology and classical metaphysics.", content: "" },
-  { title: "Machen Still Speaks", category: "Church History", date_text: "April 30, 2026", summary: "A century after Christianity and Liberalism, Machen's diagnosis remains startlingly current. The two religions still walk our pews.", content: "" },
-  { title: "Reading Edwards on the Affections", category: "Puritans", date_text: "April 12, 2026", summary: "Jonathan Edwards on the marks of genuine religious affection — and why every believer should sit, slowly, with this Puritan classic.", content: "" },
-  { title: "The Trinity and the Modalist Temptation", category: "Doctrine", date_text: "March 27, 2026", summary: "Why oneness theology continually re-emerges, and why the historic doctrine of the Trinity is not a riddle but a refuge.", content: "" },
-  { title: "Why God Allows Evil", category: "Philosophy", date_text: "March 06, 2026", summary: "A working theodicy rooted in the sovereignty and goodness of God — and an honest reckoning with the limits of our seeing.", content: "" },
+  { title: "On the Knowledge of God", category: "Theology", date_text: "May 28, 2026", summary: "Calvin opens the Institutes with a hinge: we cannot know ourselves without knowing God, nor God without knowing ourselves. A meditation.", content: "", image_url: null },
+  { title: "The Kalam Argument, Revisited", category: "Apologetics", date_text: "May 14, 2026", summary: "A short defense of the second premise — that the universe began to exist — drawing on contemporary cosmology and classical metaphysics.", content: "", image_url: null },
+  { title: "Machen Still Speaks", category: "Church History", date_text: "April 30, 2026", summary: "A century after Christianity and Liberalism, Machen's diagnosis remains startlingly current. The two religions still walk our pews.", content: "", image_url: null },
+  { title: "Reading Edwards on the Affections", category: "Puritans", date_text: "April 12, 2026", summary: "Jonathan Edwards on the marks of genuine religious affection — and why every believer should sit, slowly, with this Puritan classic.", content: "", image_url: null },
+  { title: "The Trinity and the Modalist Temptation", category: "Doctrine", date_text: "March 27, 2026", summary: "Why oneness theology continually re-emerges, and why the historic doctrine of the Trinity is not a riddle but a refuge.", content: "", image_url: null },
+  { title: "Why God Allows Evil", category: "Philosophy", date_text: "March 06, 2026", summary: "A working theodicy rooted in the sovereignty and goodness of God — and an honest reckoning with the limits of our seeing.", content: "", image_url: null },
 ];
 
 export const DEFAULT_SETTINGS: SiteSettings = {

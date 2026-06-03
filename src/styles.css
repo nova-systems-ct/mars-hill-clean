@@ -65,7 +65,7 @@
   --sky: oklch(0.95 0.025 240);
   --cloud: oklch(0.99 0.005 240);
   --gold: oklch(0.74 0.09 80);
-  --slate-ink: oklch(0.42 0.025 255);
+  --slate-ink: oklch(0.28 0.025 255);   /* darkened for contrast */
 
   --background: var(--cloud);
   --foreground: var(--navy);
@@ -105,7 +105,9 @@
     font-family: var(--font-sans);
     font-feature-settings: "ss01", "cv11";
     -webkit-font-smoothing: antialiased;
+    font-weight: 400;
   }
+  p { font-weight: 400; }
   h1, h2, h3, h4 {
     font-family: var(--font-display);
     font-feature-settings: "ss01";
