@@ -7,10 +7,10 @@ export type PaperCategory = "Doctrine" | "World Religions" | "Culture" | "Histor
 export type BookEra = "Patristic" | "Reformation" | "Puritan" | "Modern" | "Apologetics";
 export type EventType = "in-person" | "zoom" | "hybrid";
 
-export type Paper   = { id: string; title: string; category: PaperCategory; year: string; summary: string; pdf_link?: string | null; };
-export type Book    = { id: string; title: string; author: string; era: BookEra; year: string; note: string; cover_url?: string | null; link_url?: string | null; };
-export type Episode = { id: string; number: string; title: string; length: string; };
-export type Event   = { id: string; title: string; date_text: string; location: string; type: EventType; zoom_link?: string | null; };
+export type Paper    = { id: string; title: string; category: PaperCategory; year: string; summary: string; pdf_link?: string | null; };
+export type Book     = { id: string; title: string; author: string; era: BookEra; year: string; note: string; cover_url?: string | null; link_url?: string | null; };
+export type Episode  = { id: string; number: string; title: string; length: string; };
+export type Event    = { id: string; title: string; date_text: string; location: string; type: EventType; zoom_link?: string | null; };
 export type BlogPost = { id: string; title: string; category: string; date_text: string; summary: string; content: string; image_url?: string | null; };
 export type SiteSettings = Record<string, string>;
 
@@ -36,62 +36,62 @@ export const SEED_PAPERS: PaperSeed[] = [
 ];
 
 export const SEED_BOOKS: BookSeed[] = [
-  { title: "Institutes of the Christian Religion", author: "John Calvin", era: "Reformation", year: "1559", note: "The cornerstone of Reformed systematic theology." },
-  { title: "The Bondage of the Will", author: "Martin Luther", era: "Reformation", year: "1525", note: "The hinge of the Reformation — grace, will, and Scripture." },
-  { title: "On the Incarnation", author: "Athanasius", era: "Patristic", year: "318", note: "The classic defense of the divinity of the Son." },
-  { title: "Confessions", author: "Augustine", era: "Patristic", year: "400", note: "The soul laid bare before a sovereign God." },
-  { title: "The Religious Affections", author: "Jonathan Edwards", era: "Puritan", year: "1746", note: "On the marks of true gracious affection in the soul." },
-  { title: "Pilgrim's Progress", author: "John Bunyan", era: "Puritan", year: "1678", note: "An allegory of the Christian life — unrivaled." },
-  { title: "The Mortification of Sin", author: "John Owen", era: "Puritan", year: "1656", note: "Be killing sin or it will be killing you." },
-  { title: "Christianity and Liberalism", author: "J. Gresham Machen", era: "Modern", year: "1923", note: "A bracing defense of historic Christian faith." },
-  { title: "The Inspiration and Authority of the Bible", author: "B. B. Warfield", era: "Modern", year: "1948", note: "Princeton's defense of Scripture." },
-  { title: "Mere Christianity", author: "C. S. Lewis", era: "Apologetics", year: "1952", note: "Accessible Christian apologetics at its finest." },
-  { title: "The Reason for God", author: "Timothy Keller", era: "Apologetics", year: "2008", note: "Apologetics for the skeptical and the seeking." },
-  { title: "Reasonable Faith", author: "William Lane Craig", era: "Apologetics", year: "2008", note: "The Kalam argument and a rigorous case for theism." },
+  { title: "Institutes of the Christian Religion", author: "John Calvin",       era: "Reformation", year: "1559", note: "The cornerstone of Reformed systematic theology." },
+  { title: "The Bondage of the Will",              author: "Martin Luther",     era: "Reformation", year: "1525", note: "The hinge of the Reformation — grace, will, and Scripture." },
+  { title: "On the Incarnation",                   author: "Athanasius",        era: "Patristic",   year: "318",  note: "The classic defense of the divinity of the Son." },
+  { title: "Confessions",                          author: "Augustine",         era: "Patristic",   year: "400",  note: "The soul laid bare before a sovereign God." },
+  { title: "The Religious Affections",             author: "Jonathan Edwards",  era: "Puritan",     year: "1746", note: "On the marks of true gracious affection in the soul." },
+  { title: "Pilgrim's Progress",                   author: "John Bunyan",       era: "Puritan",     year: "1678", note: "An allegory of the Christian life — unrivaled." },
+  { title: "The Mortification of Sin",             author: "John Owen",         era: "Puritan",     year: "1656", note: "Be killing sin or it will be killing you." },
+  { title: "Christianity and Liberalism",          author: "J. Gresham Machen", era: "Modern",      year: "1923", note: "A bracing defense of historic Christian faith." },
+  { title: "The Inspiration and Authority of the Bible", author: "B. B. Warfield", era: "Modern",  year: "1948", note: "Princeton's defense of Scripture." },
+  { title: "Mere Christianity",                    author: "C. S. Lewis",       era: "Apologetics", year: "1952", note: "Accessible Christian apologetics at its finest." },
+  { title: "The Reason for God",                   author: "Timothy Keller",    era: "Apologetics", year: "2008", note: "Apologetics for the skeptical and the seeking." },
+  { title: "Reasonable Faith",                     author: "William Lane Craig", era: "Apologetics", year: "2008", note: "The Kalam argument and a rigorous case for theism." },
 ];
 
 export const SEED_EPISODES: EpisodeSeed[] = [
-  { number: "01", title: "Calvin on the Knowledge of God", length: "42 min" },
-  { number: "02", title: "B.B. Warfield on Inspiration", length: "38 min" },
-  { number: "03", title: "Luther's Bondage of the Will", length: "51 min" },
-  { number: "04", title: "Machen — Christianity and Liberalism", length: "47 min" },
+  { number: "01", title: "Calvin on the Knowledge of God",        length: "42 min" },
+  { number: "02", title: "B.B. Warfield on Inspiration",          length: "38 min" },
+  { number: "03", title: "Luther's Bondage of the Will",          length: "51 min" },
+  { number: "04", title: "Machen — Christianity and Liberalism",  length: "47 min" },
 ];
 
 export const SEED_EVENTS: EventSeed[] = [
-  { title: "The Sovereignty of God in Suffering", date_text: "Mar 14", location: "In Person · CT", type: "in-person" },
-  { title: "Reading Calvin's Institutes, Book I", date_text: "Apr 11", location: "Hybrid · Zoom", type: "hybrid" },
-  { title: "Machen on Liberalism, a Century Later", date_text: "May 09", location: "Guest Speaker", type: "hybrid" },
+  { title: "The Sovereignty of God in Suffering",  date_text: "Mar 14", location: "In Person · CT",  type: "in-person" },
+  { title: "Reading Calvin's Institutes, Book I",  date_text: "Apr 11", location: "Hybrid · Zoom",   type: "hybrid" },
+  { title: "Machen on Liberalism, a Century Later",date_text: "May 09", location: "Guest Speaker",    type: "hybrid" },
 ];
 
 export const SEED_BLOG_POSTS: BlogPostSeed[] = [
-  { title: "On the Knowledge of God", category: "Theology", date_text: "May 28, 2026", summary: "Calvin opens the Institutes with a hinge: we cannot know ourselves without knowing God, nor God without knowing ourselves. A meditation.", content: "", image_url: null },
-  { title: "The Kalam Argument, Revisited", category: "Apologetics", date_text: "May 14, 2026", summary: "A short defense of the second premise — that the universe began to exist — drawing on contemporary cosmology and classical metaphysics.", content: "", image_url: null },
-  { title: "Machen Still Speaks", category: "Church History", date_text: "April 30, 2026", summary: "A century after Christianity and Liberalism, Machen's diagnosis remains startlingly current. The two religions still walk our pews.", content: "", image_url: null },
-  { title: "Reading Edwards on the Affections", category: "Puritans", date_text: "April 12, 2026", summary: "Jonathan Edwards on the marks of genuine religious affection — and why every believer should sit, slowly, with this Puritan classic.", content: "", image_url: null },
-  { title: "The Trinity and the Modalist Temptation", category: "Doctrine", date_text: "March 27, 2026", summary: "Why oneness theology continually re-emerges, and why the historic doctrine of the Trinity is not a riddle but a refuge.", content: "", image_url: null },
-  { title: "Why God Allows Evil", category: "Philosophy", date_text: "March 06, 2026", summary: "A working theodicy rooted in the sovereignty and goodness of God — and an honest reckoning with the limits of our seeing.", content: "", image_url: null },
+  { title: "On the Knowledge of God",               category: "Theology",      date_text: "May 28, 2026",   summary: "Calvin opens the Institutes with a hinge: we cannot know ourselves without knowing God, nor God without knowing ourselves. A meditation.",                                                          content: "", image_url: null },
+  { title: "The Kalam Argument, Revisited",          category: "Apologetics",   date_text: "May 14, 2026",   summary: "A short defense of the second premise — that the universe began to exist — drawing on contemporary cosmology and classical metaphysics.",                                                        content: "", image_url: null },
+  { title: "Machen Still Speaks",                    category: "Church History", date_text: "April 30, 2026", summary: "A century after Christianity and Liberalism, Machen's diagnosis remains startlingly current. The two religions still walk our pews.",                                                          content: "", image_url: null },
+  { title: "Reading Edwards on the Affections",      category: "Puritans",       date_text: "April 12, 2026", summary: "Jonathan Edwards on the marks of genuine religious affection — and why every believer should sit, slowly, with this Puritan classic.",                                                         content: "", image_url: null },
+  { title: "The Trinity and the Modalist Temptation",category: "Doctrine",       date_text: "March 27, 2026", summary: "Why oneness theology continually re-emerges, and why the historic doctrine of the Trinity is not a riddle but a refuge.",                                                                       content: "", image_url: null },
+  { title: "Why God Allows Evil",                    category: "Philosophy",     date_text: "March 06, 2026", summary: "A working theodicy rooted in the sovereignty and goodness of God — and an honest reckoning with the limits of our seeing.",                                                                   content: "", image_url: null },
 ];
 
 export const DEFAULT_SETTINGS: SiteSettings = {
-  hero_tagline: "Defending truth. Pursuing wisdom. Equipping men to think Biblically — with the rigor of the academy and the reverence of the church.",
-  scripture_quote: "Always be prepared to give an answer.",
-  scripture_reference: "1 Peter 3:15",
-  youtube_url: "https://www.youtube.com/channel/UCIDs8zPms4tbsYJKOu",
-  facebook_url: "https://www.facebook.com/marshillapologetics",
-  spotify_url: "https://open.spotify.com/show/4xnDbJFrb1gpwHfyEabZoG",
-  steeped_current_book: "Pilgrim's Progress",
-  steeped_current_author: "John Bunyan",
-  steeped_past_readings: "Mere Christianity — C. S. Lewis",
-  steeped_meeting_time: "Thursday nights at 7:00 PM EST",
-  steeped_contact_email: "tlcleon@gmail.com",
+  hero_tagline:         "Defending truth. Pursuing wisdom. Equipping men to think Biblically — with the rigor of the academy and the reverence of the church.",
+  scripture_quote:      "Always be prepared to give an answer.",
+  scripture_reference:  "1 Peter 3:15",
+  youtube_url:          "https://www.youtube.com/channel/UCIDs8zPms4tbsYJKOu",
+  facebook_url:         "https://www.facebook.com/marshillapologetics",
+  spotify_url:          "https://open.spotify.com/show/4xnDbJFrb1gpwHfyEabZoG",
+  steeped_current_book:    "Pilgrim's Progress",
+  steeped_current_author:  "John Bunyan",
+  steeped_past_readings:   "Mere Christianity — C. S. Lewis",
+  steeped_meeting_time:    "Thursday nights at 7:00 PM EST",
+  steeped_contact_email:   "tlcleon@gmail.com",
 };
 
-// Display-safe placeholders while Supabase loads
-const mkPapers    = (): Paper[]    => SEED_PAPERS.map((p, i)  => ({ id: `l${i}`, ...p }));
-const mkBooks     = (): Book[]     => SEED_BOOKS.map((b, i)   => ({ id: `l${i}`, ...b }));
-const mkEpisodes  = (): Episode[]  => SEED_EPISODES.map((e, i) => ({ id: `l${i}`, ...e }));
-const mkEvents    = (): Event[]    => SEED_EVENTS.map((e, i)  => ({ id: `l${i}`, ...e }));
-const mkPosts     = (): BlogPost[] => SEED_BLOG_POSTS.map((p, i) => ({ id: `l${i}`, ...p }));
+// Stable local placeholders used while Supabase loads OR as fallback when DB is unreachable
+const mkPapers    = (): Paper[]    => SEED_PAPERS.map((p, i)    => ({ id: `local_${i}`, ...p }));
+const mkBooks     = (): Book[]     => SEED_BOOKS.map((b, i)     => ({ id: `local_${i}`, ...b }));
+const mkEpisodes  = (): Episode[]  => SEED_EPISODES.map((e, i)  => ({ id: `local_${i}`, ...e }));
+const mkEvents    = (): Event[]    => SEED_EVENTS.map((e, i)    => ({ id: `local_${i}`, ...e }));
+const mkPosts     = (): BlogPost[] => SEED_BLOG_POSTS.map((p, i) => ({ id: `local_${i}`, ...p }));
 
 // ── Context type ──────────────────────────────────────────────────────────────
 
@@ -101,34 +101,34 @@ type Ctx = {
   settings: SiteSettings;
   loading: boolean;   dbError: string | null;
   // papers
-  addPaper: (p: PaperSeed) => Promise<void>;
-  updatePaper: (id: string, data: Partial<PaperSeed>) => Promise<void>;
-  deletePaper: (id: string) => Promise<void>;
-  resetPapers: () => Promise<void>;
+  addPaper:    (p: PaperSeed)                           => Promise<void>;
+  updatePaper: (id: string, data: Partial<PaperSeed>)   => Promise<void>;
+  deletePaper: (id: string)                             => Promise<void>;
+  resetPapers: ()                                       => Promise<void>;
   // books
-  addBook: (b: BookSeed) => Promise<void>;
-  updateBook: (id: string, data: Partial<BookSeed>) => Promise<void>;
-  deleteBook: (id: string) => Promise<void>;
-  resetBooks: () => Promise<void>;
+  addBook:     (b: BookSeed)                            => Promise<void>;
+  updateBook:  (id: string, data: Partial<BookSeed>)    => Promise<void>;
+  deleteBook:  (id: string)                             => Promise<void>;
+  resetBooks:  ()                                       => Promise<void>;
   // episodes
-  addEpisode: (e: EpisodeSeed) => Promise<void>;
-  updateEpisode: (id: string, data: Partial<EpisodeSeed>) => Promise<void>;
-  deleteEpisode: (id: string) => Promise<void>;
-  resetEpisodes: () => Promise<void>;
+  addEpisode:     (e: EpisodeSeed)                         => Promise<void>;
+  updateEpisode:  (id: string, data: Partial<EpisodeSeed>) => Promise<void>;
+  deleteEpisode:  (id: string)                             => Promise<void>;
+  resetEpisodes:  ()                                       => Promise<void>;
   // events
-  addEvent: (e: EventSeed) => Promise<void>;
-  updateEvent: (id: string, data: Partial<EventSeed>) => Promise<void>;
-  deleteEvent: (id: string) => Promise<void>;
-  resetEvents: () => Promise<void>;
+  addEvent:    (e: EventSeed)                           => Promise<void>;
+  updateEvent: (id: string, data: Partial<EventSeed>)   => Promise<void>;
+  deleteEvent: (id: string)                             => Promise<void>;
+  resetEvents: ()                                       => Promise<void>;
   // blog posts
-  addBlogPost: (p: BlogPostSeed) => Promise<void>;
+  addBlogPost:    (p: BlogPostSeed)                         => Promise<void>;
   updateBlogPost: (id: string, data: Partial<BlogPostSeed>) => Promise<void>;
-  deleteBlogPost: (id: string) => Promise<void>;
+  deleteBlogPost: (id: string)                              => Promise<void>;
   // settings
-  updateSetting: (key: string, value: string) => Promise<void>;
-  updateSettings: (patch: SiteSettings) => Promise<void>;
-  getSetting: (key: string, fallback?: string) => string;
-  resetSettings: () => Promise<void>;
+  updateSetting:  (key: string, value: string)              => Promise<void>;
+  updateSettings: (patch: SiteSettings)                     => Promise<void>;
+  getSetting:     (key: string, fallback?: string)          => string;
+  resetSettings:  ()                                        => Promise<void>;
 };
 
 const ContentContext = createContext<Ctx | null>(null);
@@ -147,37 +147,71 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => { loadAll(); }, []);
 
+  /**
+   * Try to INSERT seed rows; if the DB blocks it (RLS, missing table, etc.),
+   * return the local seed array with stable fake IDs so the UI always has data.
+   */
   async function seedTable<T extends object>(table: string, rows: T[]): Promise<T[]> {
-    const { data } = await supabase.from(table).insert(rows).select();
-    return (data as T[]) ?? [];
+    try {
+      const { data, error } = await supabase.from(table).insert(rows).select();
+      if (!error && data?.length) return data as T[];
+    } catch { /* ignore */ }
+    // DB blocked — return local copies with synthetic IDs
+    return rows.map((r, i) => ({ ...r, id: `local_${i}` })) as unknown as T[];
   }
 
   async function loadAll() {
-    setLoading(true); setDbError(null);
-    try {
-      const [pr, br, er, evr, blr, stgr] = await Promise.all([
-        supabase.from("papers").select("*").order("created_at"),
-        supabase.from("library").select("*").order("created_at"),
-        supabase.from("episodes").select("*").order("created_at"),
-        supabase.from("events").select("*").order("created_at"),
-        supabase.from("blog_posts").select("*").order("created_at", { ascending: false }),
-        supabase.from("site_settings").select("key,value"),
-      ]);
+    setLoading(true);
+    setDbError(null);
 
-      if (pr.error)  throw new Error(`papers: ${pr.error.message}`);
-      if (br.error)  throw new Error(`library: ${br.error.message}`);
-      if (er.error)  throw new Error(`episodes: ${er.error.message}`);
-      if (evr.error) throw new Error(`events: ${evr.error.message}`);
-      if (blr.error) throw new Error(`blog_posts: ${blr.error.message}`);
-      if (stgr.error) throw new Error(`site_settings: ${stgr.error.message}`);
+    // Run all queries in parallel; collect results without throwing
+    const [pr, br, er, evr, blr, stgr] = await Promise.all([
+      supabase.from("papers").select("*").order("created_at"),
+      supabase.from("library").select("*").order("created_at"),
+      supabase.from("episodes").select("*").order("created_at"),
+      supabase.from("events").select("*").order("created_at"),
+      supabase.from("blog_posts").select("*").order("created_at", { ascending: false }),
+      supabase.from("site_settings").select("key,value"),
+    ]);
 
-      setPapers(pr.data.length   ? pr.data  : await seedTable("papers",    SEED_PAPERS));
-      setBooks(br.data.length    ? br.data  : await seedTable("library",   SEED_BOOKS));
-      setEpisodes(er.data.length ? er.data  : await seedTable("episodes",  SEED_EPISODES));
-      setEvents(evr.data.length  ? evr.data : await seedTable("events",    SEED_EVENTS));
-      setBlogPosts(blr.data.length ? blr.data : await seedTable("blog_posts", SEED_BLOG_POSTS));
+    // Collect any errors into a summary message but don't abort loading
+    const errors: string[] = [];
+    if (pr.error)   errors.push(`papers: ${pr.error.message}`);
+    if (br.error)   errors.push(`library: ${br.error.message}`);
+    if (er.error)   errors.push(`episodes: ${er.error.message}`);
+    if (evr.error)  errors.push(`events: ${evr.error.message}`);
+    if (blr.error)  errors.push(`blog_posts: ${blr.error.message}`);
+    if (stgr.error) errors.push(`site_settings: ${stgr.error.message}`);
+    if (errors.length) setDbError(errors.join(" | "));
 
-      if (stgr.data.length === 0) {
+    // Papers — use DB data, or seed if empty, or keep local fallback on error
+    if (!pr.error) {
+      setPapers(pr.data?.length ? (pr.data as Paper[]) : (await seedTable("papers", SEED_PAPERS)) as unknown as Paper[]);
+    }
+
+    // Books / Library
+    if (!br.error) {
+      setBooks(br.data?.length ? (br.data as Book[]) : (await seedTable("library", SEED_BOOKS)) as unknown as Book[]);
+    }
+
+    // Episodes
+    if (!er.error) {
+      setEpisodes(er.data?.length ? (er.data as Episode[]) : (await seedTable("episodes", SEED_EPISODES)) as unknown as Episode[]);
+    }
+
+    // Events
+    if (!evr.error) {
+      setEvents(evr.data?.length ? (evr.data as Event[]) : (await seedTable("events", SEED_EVENTS)) as unknown as Event[]);
+    }
+
+    // Blog posts
+    if (!blr.error) {
+      setBlogPosts(blr.data?.length ? (blr.data as BlogPost[]) : (await seedTable("blog_posts", SEED_BLOG_POSTS)) as unknown as BlogPost[]);
+    }
+
+    // Settings
+    if (!stgr.error) {
+      if (!stgr.data?.length) {
         const rows = Object.entries(DEFAULT_SETTINGS).map(([key, value]) => ({ key, value }));
         await supabase.from("site_settings").insert(rows);
         setSettings({ ...DEFAULT_SETTINGS });
@@ -186,11 +220,9 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
         for (const row of stgr.data) map[row.key] = row.value;
         setSettings(map);
       }
-    } catch (err: unknown) {
-      setDbError(err instanceof Error ? err.message : "Database error");
-    } finally {
-      setLoading(false);
     }
+
+    setLoading(false);
   }
 
   // ── Papers ────────────────────────────────────────────────────────────────
@@ -287,15 +319,13 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
   // ── Settings ──────────────────────────────────────────────────────────────
 
   const updateSetting = async (key: string, value: string) => {
-    const { error } = await supabase.from("site_settings")
-      .upsert({ key, value }, { onConflict: "key" });
+    const { error } = await supabase.from("site_settings").upsert({ key, value }, { onConflict: "key" });
     if (!error) setSettings(prev => ({ ...prev, [key]: value }));
   };
 
   const updateSettings = async (patch: SiteSettings) => {
     const rows = Object.entries(patch).map(([key, value]) => ({ key, value }));
-    const { error } = await supabase.from("site_settings")
-      .upsert(rows, { onConflict: "key" });
+    const { error } = await supabase.from("site_settings").upsert(rows, { onConflict: "key" });
     if (!error) setSettings(prev => ({ ...prev, ...patch }));
   };
 

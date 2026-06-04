@@ -106,6 +106,7 @@
     font-feature-settings: "ss01", "cv11";
     -webkit-font-smoothing: antialiased;
     font-weight: 400;
+    overflow-x: hidden;   /* prevent horizontal scroll on mobile */
   }
   p { font-weight: 400; }
   h1, h2, h3, h4 {
@@ -117,6 +118,10 @@
     background: color-mix(in oklab, var(--gold) 35%, transparent);
     color: var(--navy);
   }
+  /* Ensure fixed header never overlaps page content */
+  :root { --nav-height: 4rem; }
+  /* Images are responsive by default */
+  img { max-width: 100%; height: auto; }
 }
 
 @utility text-balance { text-wrap: balance; }
