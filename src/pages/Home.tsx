@@ -141,6 +141,45 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── Steeped in Truth ── */}
+      <section className="bg-white py-20 lg:py-28">
+        <div className="mx-auto max-w-7xl px-6 lg:px-10">
+          <div className="grid gap-12 lg:grid-cols-12 lg:gap-16 lg:items-center">
+            <div className="lg:col-span-7">
+              <p className="eyebrow">A Women's Ministry</p>
+              <h2 className="mt-4 font-display text-4xl font-light leading-[1.05] text-navy sm:text-5xl">
+                Steeped in<span className="italic text-gold"> Truth.</span>
+              </h2>
+              <div className="gold-rule my-7 max-w-[5rem]" />
+              <p className="text-lg leading-relaxed text-slate-700">
+                A gathering of women drawn together by Scripture, sisterhood, and the
+                great Christian classics — reading slowly, thinking deeply, and
+                worshiping the Lord in the beauty of holiness.
+              </p>
+              <div className="mt-8">
+                <Link
+                  to="/steeped-in-truth"
+                  className="inline-flex items-center gap-3 rounded-full bg-navy px-7 py-3.5 text-xs font-semibold uppercase tracking-[0.18em] text-white transition hover:bg-gold hover:text-navy"
+                >
+                  Learn More →
+                </Link>
+              </div>
+            </div>
+            <div className="lg:col-span-5">
+              <div className="rounded-2xl border border-slate-200 bg-sky/10 p-8 shadow-sm">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-gold">Now Reading</p>
+                <h3 className="mt-3 font-display text-2xl font-light text-navy">Pilgrim's Progress</h3>
+                <p className="mt-1 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">John Bunyan</p>
+                <div className="mt-5 border-t border-slate-200 pt-4">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-gold">Meets</p>
+                  <p className="mt-1 font-medium text-navy">Thursdays at 7:00 PM EST</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── Vision ── */}
       <Vision />
 

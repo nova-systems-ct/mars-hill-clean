@@ -13,10 +13,10 @@ const otherClubs = [
 export default function SteepedInTruth() {
   const { getSetting } = useContent();
 
-  const currentBook   = getSetting("steeped_current_book",   "Pilgrim's Progress");
-  const currentAuthor = getSetting("steeped_current_author", "John Bunyan");
-  const meetingTime   = getSetting("steeped_meeting_time",   "Thursday nights at 7:00 PM EST");
-  const contactEmail  = getSetting("steeped_contact_email",  "tlcleon@gmail.com");
+  const currentBook   = getSetting("steeped_current_book")   || "Pilgrim's Progress";
+  const currentAuthor = getSetting("steeped_current_author") || "John Bunyan";
+  const meetingTime   = getSetting("steeped_meeting_time")   || "Thursday nights at 7:00 PM EST";
+  const contactEmail  = getSetting("steeped_contact_email")  || "tlcleon@gmail.com";
   const pastReadings  = (getSetting("steeped_past_readings") || "Mere Christianity — C. S. Lewis")
     .split("\n").map(s => s.trim()).filter(Boolean);
 
@@ -57,7 +57,7 @@ export default function SteepedInTruth() {
             </h2>
             <div className="gold-rule my-7 max-w-[5rem]" />
             <p className="text-lg leading-relaxed text-slate-700">
-              We meet {meetingTime}. Open to women across the country — join us in person or by Zoom.
+              We meet {meetingTime}. Open to women across the country.
             </p>
             <div className="mt-8 space-y-4 text-slate-700">
               <div className="rounded-xl border border-slate-200 bg-sky/10 p-5">
