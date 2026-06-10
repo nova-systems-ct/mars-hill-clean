@@ -677,11 +677,11 @@ function PodcastManager() {
 
 // ── Events manager ─────────────────────────────────────────────────────────────
 
-const EVENT_TYPES: EventType[] = ["in-person","zoom","hybrid"];
+const EVENT_TYPES: EventType[] = ["in-person","hybrid"];
 
 function EventsManager() {
   const { events, addEvent, updateEvent, deleteEvent, resetEvents, loading, dbError } = useContent();
-  const blank = { title:"", date_text:"", location:"", type:"in-person" as EventType, zoom_link:"" };
+  const blank = { title:"", date_text:"", location:"", type:"in-person" as EventType };
   const [form, setForm] = useState(blank);
   const [editId, setEditId] = useState<string|null>(null);
   const [editForm, setEditForm] = useState(blank);
@@ -690,23 +690,19 @@ function EventsManager() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault(); if (!form.title) return;
-    setBusy(true); await addEvent({ title:form.title, date_text:form.date_text, location:form.location, type:form.type, zoom_link:form.zoom_link||null });
+    setBusy(true); await addEvent({ title:form.title, date_text:form.date_text, location:form.location, type:form.type });
     setForm(blank); setFlash("Added ✓"); setBusy(false);
   };
-  const startEdit = (ev: Event) => { setEditId(ev.id); setEditForm({ title:ev.title, date_text:ev.date_text, location:ev.location, type:ev.type, zoom_link:ev.zoom_link||"" }); };
+  const startEdit = (ev: Event) => { setEditId(ev.id); setEditForm({ title:ev.title, date_text:ev.date_text, location:ev.location, type:ev.type }); };
   const saveEdit = async () => {
     if (!editId) return; setBusy(true);
-    await updateEvent(editId, { title:editForm.title, date_text:editForm.date_text, location:editForm.location, type:editForm.type, zoom_link:editForm.zoom_link||null });
+    await updateEvent(editId, { title:editForm.title, date_text:editForm.date_text, location:editForm.location, type:editForm.type });
     setEditId(null); setFlash("Saved ✓"); setBusy(false);
   };
 
   return (
     <div className="space-y-8">
       {dbError && <DbError msg={dbError} />}
-      <div className="rounded-2xl border border-gold/20 bg-sky/10 px-5 py-3 text-xs text-slate-ink">
-        <strong className="text-navy">Zoom Link field:</strong> To enable the Zoom Link field, run in Supabase SQL Editor:
-        <code className="ml-2 rounded bg-sky/40 px-2 py-0.5 font-mono text-[10px]">ALTER TABLE events ADD COLUMN IF NOT EXISTS zoom_link TEXT;</code>
-      </div>
       <div className="grid gap-10 lg:grid-cols-2">
         <div>
           <h2 className="font-display text-2xl text-navy">Add an Event</h2>
@@ -717,7 +713,6 @@ function EventsManager() {
               <Field label="Type"><select value={form.type} onChange={e=>setForm(f=>({...f,type:e.target.value as EventType}))} className={inputCls}>{EVENT_TYPES.map(t=><option key={t} value={t}>{t}</option>)}</select></Field>
             </div>
             <Field label="Location / Notes"><input value={form.location} onChange={e=>setForm(f=>({...f,location:e.target.value}))} className={inputCls} placeholder="In Person · CT" /></Field>
-            <Field label="Zoom Link (optional)"><input type="url" value={form.zoom_link} onChange={e=>setForm(f=>({...f,zoom_link:e.target.value}))} className={inputCls} placeholder="https://zoom.us/j/…" /></Field>
             <Row><button type="submit" disabled={busy||loading} className={btnPrimary}>{busy?"Saving…":"Add Event"}</button><Flash msg={flash} /></Row>
           </form>
         </div>
@@ -737,7 +732,6 @@ function EventsManager() {
                         <select value={editForm.type} onChange={e=>setEditForm(f=>({...f,type:e.target.value as EventType}))} className={inputCls}>{EVENT_TYPES.map(t=><option key={t} value={t}>{t}</option>)}</select>
                       </div>
                       <input value={editForm.location} onChange={e=>setEditForm(f=>({...f,location:e.target.value}))} className={inputCls} placeholder="Location" />
-                      <input type="url" value={editForm.zoom_link} onChange={e=>setEditForm(f=>({...f,zoom_link:e.target.value}))} className={inputCls} placeholder="Zoom link (optional)" />
                       <Row><button onClick={saveEdit} disabled={busy} className={btnPrimary}>Save</button><button onClick={()=>setEditId(null)} className={btnGhost}>Cancel</button></Row>
                     </div>
                   ) : (

@@ -5,12 +5,12 @@ import { supabase } from "@/lib/supabase";
 
 export type PaperCategory = "Doctrine" | "World Religions" | "Culture" | "History" | "Philosophy";
 export type BookEra = "Patristic" | "Reformation" | "Puritan" | "Modern" | "Apologetics";
-export type EventType = "in-person" | "zoom" | "hybrid";
+export type EventType = "in-person" | "hybrid";
 
 export type Paper    = { id: string; title: string; category: PaperCategory; year: string; summary: string; pdf_link?: string | null; };
 export type Book     = { id: string; title: string; author: string; era: BookEra; year: string; note: string; cover_url?: string | null; link_url?: string | null; };
 export type Episode  = { id: string; number: string; title: string; length: string; };
-export type Event    = { id: string; title: string; date_text: string; location: string; type: EventType; zoom_link?: string | null; };
+export type Event    = { id: string; title: string; date_text: string; location: string; type: EventType; };
 export type BlogPost = { id: string; title: string; category: string; date_text: string; summary: string; content: string; image_url?: string | null; };
 export type SiteSettings = Record<string, string>;
 

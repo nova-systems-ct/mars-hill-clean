@@ -8,7 +8,7 @@ export default function TheologyOnTapPage() {
     <main className="min-h-screen bg-white text-foreground">
       <PageMeta
         title="Theology on Tap — Mars Hill Apologetics"
-        description="A monthly gathering of men devoted to the rigorous, fraternal pursuit of Biblical theology. Founded October 2017 in Connecticut. In person and via Zoom."
+        description="A monthly gathering of men devoted to the rigorous, fraternal pursuit of Biblical theology. Founded October 2017 in Connecticut. In person."
         path="/theology-on-tap"
       />
       <Nav />

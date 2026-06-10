@@ -20,9 +20,8 @@ export function TheologyOnTap() {
               to the rigorous, fraternal pursuit of Biblical theology.
             </p>
             <p className="mt-5 text-lg leading-relaxed text-slate-700">
-              We have welcomed guests from across the country via Zoom. We probe
-              every corner of life for Scriptural truth — because ideas have
-              consequences, and bad ideas have victims. No stone is left
+              We probe every corner of life for Scriptural truth — because ideas
+              have consequences, and bad ideas have victims. No stone is left
               unturned. If you have the truth, you have nothing to fear.
             </p>
             <p className="mt-5 font-display text-xl italic text-gold">Bring your A game, or go home.</p>
@@ -30,10 +29,6 @@ export function TheologyOnTap() {
               <a href="mailto:defender315@msn.com?subject=Join%20Theology%20on%20Tap%20in%20person"
                 className="inline-flex items-center gap-3 rounded-full bg-navy px-7 py-3.5 text-xs font-semibold uppercase tracking-[0.18em] text-white transition hover:bg-gold hover:text-navy">
                 Join in Person
-              </a>
-              <a href="mailto:defender315@msn.com?subject=Join%20Theology%20on%20Tap%20via%20Zoom"
-                className="inline-flex items-center gap-3 rounded-full border border-navy px-7 py-3.5 text-xs font-semibold uppercase tracking-[0.18em] text-navy transition hover:bg-navy hover:text-white">
-                Join via Zoom
               </a>
             </div>
           </div>
@@ -62,16 +57,6 @@ export function TheologyOnTap() {
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-navy">{e.title}</p>
                         <p className="text-xs uppercase tracking-[0.16em] text-slate-500">{e.location}</p>
-                        {e.zoom_link && (
-                          <a
-                            href={e.zoom_link}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="mt-2 inline-flex items-center gap-2 rounded-full bg-navy/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-navy transition hover:bg-navy hover:text-white"
-                          >
-                            Join Zoom →
-                          </a>
-                        )}
                       </div>
                     </div>
                   </li>

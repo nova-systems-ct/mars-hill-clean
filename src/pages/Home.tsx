@@ -79,8 +79,7 @@ export default function Home() {
               <div className="gold-rule my-7 max-w-[5rem]" />
               <p className="text-lg leading-relaxed text-slate-700">
                 A monthly gathering of men devoted to the rigorous, fraternal
-                pursuit of Biblical theology — in person and via Zoom since
-                October 2017.
+                pursuit of Biblical theology — in person since October 2017.
               </p>
               <p className="mt-4 font-display text-xl italic text-gold">
                 Bring your A game, or go home.
@@ -92,12 +91,6 @@ export default function Home() {
                 >
                   Learn more →
                 </Link>
-                <a
-                  href="mailto:defender315@msn.com?subject=Join%20Theology%20on%20Tap%20via%20Zoom"
-                  className="inline-flex items-center gap-3 rounded-full border border-navy px-7 py-3.5 text-xs font-semibold uppercase tracking-[0.18em] text-navy transition hover:bg-navy hover:text-white"
-                >
-                  Join via Zoom
-                </a>
               </div>
             </div>
 
