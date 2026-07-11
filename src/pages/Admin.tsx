@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
 import {
@@ -13,15 +13,18 @@ const AUTH_KEY       = "mha-admin-auth";
 
 // ── UI primitives ──────────────────────────────────────────────────────────────
 
-const inputCls    = "mt-2 w-full rounded-full border border-border bg-cloud px-5 py-3 text-sm text-navy placeholder:text-slate-ink/50 focus:border-gold focus:outline-none";
-const areaCls     = "mt-2 w-full rounded-2xl border border-border bg-cloud px-5 py-3 text-sm text-navy placeholder:text-slate-ink/50 focus:border-gold focus:outline-none";
-const btnPrimary  = "inline-flex items-center gap-2 rounded-full bg-navy px-7 py-3 text-xs font-semibold uppercase tracking-[0.2em] text-cloud transition hover:bg-gold hover:text-navy disabled:pointer-events-none disabled:opacity-40";
-const btnSecondary = "inline-flex items-center gap-2 rounded-full border border-navy px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.18em] text-navy transition hover:bg-navy hover:text-cloud disabled:pointer-events-none disabled:opacity-40";
-const btnGhost    = "text-xs uppercase tracking-[0.18em] text-slate-ink transition hover:text-navy disabled:pointer-events-none disabled:opacity-40";
-const btnDanger   = "text-xs uppercase tracking-[0.18em] text-slate-ink transition hover:text-red-500 disabled:pointer-events-none disabled:opacity-40";
+// Sizes bumped up from the original text-xs/text-sm scale — Isaac asked for the admin to be
+// easier to read/tap for John. These are shared constants used by every manager below, so the
+// increase applies uniformly across the whole dashboard instead of needing per-component edits.
+const inputCls    = "mt-2 w-full rounded-full border border-border bg-cloud px-5 py-3.5 text-base text-navy placeholder:text-slate-ink/50 focus:border-gold focus:outline-none";
+const areaCls     = "mt-2 w-full rounded-2xl border border-border bg-cloud px-5 py-3.5 text-base text-navy placeholder:text-slate-ink/50 focus:border-gold focus:outline-none";
+const btnPrimary  = "inline-flex min-h-[48px] items-center gap-2 rounded-full bg-navy px-7 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-cloud transition hover:bg-gold hover:text-navy disabled:pointer-events-none disabled:opacity-40";
+const btnSecondary = "inline-flex min-h-[48px] items-center gap-2 rounded-full border border-navy px-5 py-2.5 text-sm font-semibold uppercase tracking-[0.18em] text-navy transition hover:bg-navy hover:text-cloud disabled:pointer-events-none disabled:opacity-40";
+const btnGhost    = "text-sm uppercase tracking-[0.18em] text-slate-ink transition hover:text-navy disabled:pointer-events-none disabled:opacity-40";
+const btnDanger   = "text-sm uppercase tracking-[0.18em] text-slate-ink transition hover:text-red-500 disabled:pointer-events-none disabled:opacity-40";
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return <div><label className="block text-xs font-medium uppercase tracking-[0.22em] text-slate-ink">{label}</label>{children}</div>;
+  return <div><label className="block text-sm font-medium uppercase tracking-[0.22em] text-slate-ink">{label}</label>{children}</div>;
 }
 function Row({ children }: { children: React.ReactNode }) {
   return <div className="flex flex-wrap items-center gap-3">{children}</div>;
@@ -391,6 +394,7 @@ function PapersManager() {
 
   return (
     <div className="space-y-10">
+      <p className="text-base text-slate-ink">Add, edit, and remove the seminary papers shown on the Papers page. Upload a PDF for each one so visitors can download it.</p>
       {dbError && <DbError msg={dbError} />}
 
       {/* Storage setup note */}
@@ -535,6 +539,7 @@ function LibraryManager() {
 
   return (
     <div className="space-y-8">
+      <p className="text-base text-slate-ink">Add, edit, and remove the books shown on the Library page — cover images and buy/read links are optional.</p>
       {dbError && <DbError msg={dbError} />}
       <div className="rounded-2xl border border-gold/20 bg-sky/10 px-5 py-3 text-xs text-slate-ink">
         <strong className="text-navy">New fields:</strong> To enable Cover Image and PDF/Link fields, run in Supabase SQL Editor:
@@ -628,6 +633,7 @@ function PodcastManager() {
       {dbError && <DbError msg={dbError} />}
       <div className="grid gap-10 lg:grid-cols-2">
         <div>
+          <p className="mb-4 text-base text-slate-ink">Add, edit, and remove episodes shown on the Podcast page.</p>
           <h2 className="font-display text-2xl text-navy">Add an Episode</h2>
           <form onSubmit={submit} className="mt-6 space-y-5">
             <div className="grid gap-4 sm:grid-cols-2">
@@ -705,6 +711,7 @@ function EventsManager() {
       {dbError && <DbError msg={dbError} />}
       <div className="grid gap-10 lg:grid-cols-2">
         <div>
+          <p className="mb-4 text-base text-slate-ink">Add, edit, and remove Theology on Tap discussion dates shown on the homepage and Theology on Tap page.</p>
           <h2 className="font-display text-2xl text-navy">Add an Event</h2>
           <form onSubmit={submit} className="mt-6 space-y-5">
             <Field label="Title *"><input required value={form.title} onChange={e=>setForm(f=>({...f,title:e.target.value}))} className={inputCls} placeholder="Reading Calvin's Institutes, Book I" /></Field>
@@ -811,6 +818,7 @@ function BlogManager() {
 
   return (
     <div className="space-y-8">
+      <p className="text-base text-slate-ink">Add, edit, and remove blog posts. Visitors can leave comments on each post — approve them in the Comments tab.</p>
       {dbError && <DbError msg={dbError} />}
       <div>
         <h2 className="font-display text-2xl text-navy">Add a Post</h2>
@@ -1224,6 +1232,156 @@ function AnalyticsTab() {
   );
 }
 
+// ── Comments manager ──────────────────────────────────────────────────────────
+
+type AdminComment = {
+  id: string; page_slug: string; page_title: string | null;
+  commenter_name: string; commenter_email: string | null;
+  comment_text: string; approved: boolean; created_at: string;
+};
+
+function useComments() {
+  const [comments, setComments] = useState<AdminComment[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [dbError, setDbError] = useState<string | null>(null);
+
+  const reload = useCallback(async () => {
+    setLoading(true);
+    const { data, error } = await supabase.from("comments").select("*").order("created_at", { ascending: false });
+    if (error) setDbError(error.message); else { setDbError(null); setComments((data ?? []) as AdminComment[]); }
+    setLoading(false);
+  }, []);
+
+  useEffect(() => { reload(); }, [reload]);
+
+  const approve = async (id: string) => {
+    const { error } = await supabase.from("comments").update({ approved: true }).eq("id", id);
+    if (!error) setComments((prev) => prev.map((c) => c.id === id ? { ...c, approved: true } : c));
+  };
+  const remove = async (id: string) => {
+    const { error } = await supabase.from("comments").delete().eq("id", id);
+    if (!error) setComments((prev) => prev.filter((c) => c.id !== id));
+  };
+
+  return { comments, loading, dbError, reload, approve, remove };
+}
+
+function CommentsManager() {
+  const { comments, loading, dbError, approve, remove } = useComments();
+  const [filter, setFilter] = useState<"all"|"pending"|"approved">("all");
+  const [flash, setFlash] = useFlash();
+
+  const filtered = comments.filter((c) => filter === "all" ? true : filter === "pending" ? !c.approved : c.approved);
+  const pendingCount = comments.filter((c) => !c.approved).length;
+
+  return (
+    <div className="space-y-8">
+      {dbError && <DbError msg={dbError} />}
+      <div>
+        <div className="flex items-center gap-3">
+          <h2 className="font-display text-2xl text-navy">Comments Waiting for Review</h2>
+          {pendingCount > 0 && (
+            <span className="rounded-full bg-gold px-3 py-1 text-sm font-bold text-navy">{pendingCount} pending</span>
+          )}
+        </div>
+        <p className="mt-2 text-base text-slate-ink">Comments left on blog posts and the Seminary Papers page. Approve a comment to make it visible on the live site, or delete it.</p>
+      </div>
+
+      <Row>
+        {(["all","pending","approved"] as const).map((f) => (
+          <button
+            key={f}
+            onClick={() => setFilter(f)}
+            className={`min-h-[44px] rounded-full border px-5 text-sm font-semibold uppercase tracking-[0.14em] transition ${filter===f ? "border-navy bg-navy text-cloud" : "border-border text-slate-ink hover:border-navy"}`}
+          >
+            {f === "all" ? "All Comments" : f === "pending" ? "Pending Approval" : "Approved"}
+          </button>
+        ))}
+        <Flash msg={flash} />
+      </Row>
+
+      {loading ? <LoadingList /> : filtered.length === 0 ? (
+        <p className="text-base text-slate-ink/60">No comments here yet.</p>
+      ) : (
+        <ul className="space-y-4">
+          {filtered.map((c) => (
+            <li key={c.id} className="rounded-2xl border border-border bg-cloud p-6">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="font-display text-lg font-semibold text-gold">{c.commenter_name}</span>
+                {c.approved ? (
+                  <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-green-700">Approved</span>
+                ) : (
+                  <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] text-amber-700">Pending</span>
+                )}
+              </div>
+              <p className="mt-3 text-base leading-relaxed text-navy">{c.comment_text}</p>
+              <p className="mt-3 text-sm text-slate-ink">
+                On <strong>{c.page_title || c.page_slug}</strong> · {new Date(c.created_at).toLocaleString("en-US", { dateStyle: "long", timeStyle: "short" })}
+              </p>
+              <Row>
+                <div className="mt-4 flex gap-3">
+                  {!c.approved && (
+                    <button onClick={async () => { await approve(c.id); setFlash("Approved ✓"); }} className={btnPrimary}>Approve</button>
+                  )}
+                  <button onClick={async () => { if (confirm("Delete this comment?")) { await remove(c.id); setFlash("Deleted ✓"); } }} className={btnDanger}>Delete</button>
+                </div>
+              </Row>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+// ── Overview tab ──────────────────────────────────────────────────────────────
+
+function OverviewPanel({ onJumpToComments }: { onJumpToComments: () => void }) {
+  const { papers, blogPosts, episodes, events, loading } = useContent();
+  const [pendingComments, setPendingComments] = useState<number | null>(null);
+
+  useEffect(() => {
+    supabase.from("comments").select("id", { count: "exact", head: true }).eq("approved", false)
+      .then(({ count }) => setPendingComments(count ?? 0));
+  }, []);
+
+  const stats = [
+    { label: "Seminary Papers", value: papers.length },
+    { label: "Blog Posts", value: blogPosts.length },
+    { label: "Theology on Tap Dates", value: events.length },
+    { label: "Podcast Episodes", value: episodes.length },
+    { label: "Comments Pending Approval", value: pendingComments ?? "…", action: pendingComments && pendingComments > 0 ? onJumpToComments : undefined },
+  ];
+
+  return (
+    <div className="space-y-10">
+      <div>
+        <h2 className="font-display text-3xl font-light text-navy">Welcome back, John.</h2>
+        <p className="mt-2 text-base text-slate-ink">Here's what's happening on the site right now.</p>
+      </div>
+
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {stats.map((s) => (
+          <button
+            key={s.label}
+            type="button"
+            onClick={s.action}
+            disabled={!s.action}
+            className={`rounded-2xl border border-border bg-cloud p-8 text-left ${s.action ? "cursor-pointer transition hover:border-gold" : "cursor-default"}`}
+          >
+            <p className="font-display text-5xl font-light text-gold">{loading ? "…" : s.value}</p>
+            <p className="mt-3 text-base font-semibold uppercase tracking-[0.14em] text-navy">{s.label}</p>
+          </button>
+        ))}
+      </div>
+
+      <div className="rounded-2xl border border-border bg-sky/10 p-6 text-base text-slate-ink">
+        Use the tabs above to add or edit blog posts, papers, events, and podcast episodes, or to approve comments waiting for review.
+      </div>
+    </div>
+  );
+}
+
 // ── Admin icons ────────────────────────────────────────────────────────────────
 
 const ICON_PATHS: Record<string, string> = {
@@ -1238,6 +1396,8 @@ const ICON_PATHS: Record<string, string> = {
   domain:    "M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 0 1 9-9",
   support:   "M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 0 1-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z",
   analytics: "M9 19v-6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2zm0 0V9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v10m-6 0a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2m0 0V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2z",
+  overview:  "M4 5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5zm10 0a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1V5zM4 15a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-4zm10 0a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-4z",
+  comments:  "M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 0 1-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z",
 };
 
 function AdminIcon({ name }: { name: string }) {
@@ -1250,7 +1410,7 @@ function AdminIcon({ name }: { name: string }) {
 
 // ── Admin shell ────────────────────────────────────────────────────────────────
 
-type Tab = "blog"|"papers"|"library"|"podcast"|"events"|"steeped"|"homepage"|"social"|"support"|"domain"|"analytics";
+type Tab = "overview"|"blog"|"papers"|"library"|"podcast"|"events"|"steeped"|"comments"|"homepage"|"social"|"support"|"domain"|"analytics";
 type TabDef = { id: Tab; label: string; icon: string };
 
 const CONTENT_TABS: TabDef[] = [
@@ -1260,6 +1420,7 @@ const CONTENT_TABS: TabDef[] = [
   { id:"podcast",  label:"Podcast",          icon:"podcast" },
   { id:"events",   label:"Theology on Tap",  icon:"events" },
   { id:"steeped",  label:"Steeped in Truth", icon:"steeped" },
+  { id:"comments", label:"Comments",         icon:"comments" },
 ];
 const SETTINGS_TABS: TabDef[] = [
   { id:"homepage",  label:"Homepage",        icon:"homepage" },
@@ -1271,7 +1432,15 @@ const SETTINGS_TABS: TabDef[] = [
 
 export default function AdminPage() {
   const [authed, setAuthed] = useState(() => localStorage.getItem(AUTH_KEY) === "true");
-  const [activeTab, setActiveTab] = useState<Tab>("papers");
+  const [activeTab, setActiveTab] = useState<Tab>("overview");
+  const [pendingComments, setPendingComments] = useState<number | null>(null);
+
+  const refreshPendingCount = useCallback(() => {
+    supabase.from("comments").select("id", { count: "exact", head: true }).eq("approved", false)
+      .then(({ count }) => setPendingComments(count ?? 0));
+  }, []);
+
+  useEffect(() => { if (authed) refreshPendingCount(); }, [authed, activeTab, refreshPendingCount]);
 
   if (!authed) return <LoginScreen onLogin={() => setAuthed(true)} />;
   const logout = () => { localStorage.removeItem(AUTH_KEY); setAuthed(false); };
@@ -1306,13 +1475,35 @@ export default function AdminPage() {
               <span className="font-display text-sm tracking-tight text-navy">Mars Hill <span className="text-gold">Admin</span></span>
             </div>
             <div className="flex items-center gap-6">
+              {/* Notification bell — pending comments */}
+              <button
+                onClick={() => setActiveTab("comments")}
+                aria-label={`${pendingComments ?? 0} comments pending approval`}
+                className="relative rounded-full p-2 text-slate-ink transition hover:text-navy"
+              >
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0 1 18 14.158V11a6.002 6.002 0 0 0-4-5.659V5a2 2 0 1 0-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 1 1-6 0v-1m6 0H9" />
+                </svg>
+                {!!pendingComments && pendingComments > 0 && (
+                  <span className="absolute -right-0.5 -top-0.5 grid h-5 w-5 place-items-center rounded-full bg-gold text-[10px] font-bold text-navy">
+                    {pendingComments}
+                  </span>
+                )}
+              </button>
               <Link to="/" className="text-xs uppercase tracking-[0.22em] text-slate-ink hover:text-navy">← View site</Link>
               <button onClick={logout} className="text-xs uppercase tracking-[0.22em] text-slate-ink hover:text-navy">Sign out</button>
             </div>
           </div>
 
-          {/* Tab bar — Content + Settings groups */}
+          {/* Tab bar — Overview + Content + Settings groups */}
           <div className="mx-auto max-w-7xl px-6 lg:px-10">
+            {/* Row 0: Overview */}
+            <div className="flex items-center border-b border-border/30">
+              <button onClick={() => setActiveTab("overview")}
+                className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap border-b-2 px-3 py-3 text-xs font-medium uppercase tracking-[0.13em] transition ${activeTab==="overview" ? "border-gold text-navy" : "border-transparent text-slate-ink hover:text-navy"}`}>
+                <AdminIcon name="overview" />Overview
+              </button>
+            </div>
             {/* Row 1: Content tabs */}
             <div className="flex items-center overflow-x-auto border-b border-border/30">
               <span className="shrink-0 pr-3 text-[9px] font-bold uppercase tracking-[0.32em] text-slate-ink/40">Content</span>
@@ -1320,6 +1511,9 @@ export default function AdminPage() {
                 <button key={t.id} onClick={() => setActiveTab(t.id)}
                   className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap border-b-2 px-3 py-3 text-xs font-medium uppercase tracking-[0.13em] transition ${activeTab===t.id ? "border-gold text-navy" : "border-transparent text-slate-ink hover:text-navy"}`}>
                   <AdminIcon name={t.icon} />{t.label}
+                  {t.id === "comments" && !!pendingComments && pendingComments > 0 && (
+                    <span className="grid h-4 min-w-4 place-items-center rounded-full bg-gold px-1 text-[10px] font-bold text-navy">{pendingComments}</span>
+                  )}
                 </button>
               ))}
             </div>
@@ -1339,12 +1533,14 @@ export default function AdminPage() {
 
       <main className="mx-auto max-w-7xl px-6 py-12 lg:px-10">
         <div className="rounded-3xl border border-border bg-white p-8 shadow-soft lg:p-12">
+          {activeTab==="overview" && <OverviewPanel onJumpToComments={() => setActiveTab("comments")} />}
           {activeTab==="papers"   && <PapersManager />}
           {activeTab==="library"  && <LibraryManager />}
           {activeTab==="podcast"  && <PodcastManager />}
           {activeTab==="events"   && <EventsManager />}
           {activeTab==="blog"     && <BlogManager />}
           {activeTab==="steeped"  && <SteepedManager />}
+          {activeTab==="comments" && <CommentsManager />}
           {activeTab==="homepage" && <HomepageManager />}
           {activeTab==="social"   && <SocialLinksManager />}
           {activeTab==="support"   && <SupportTab />}

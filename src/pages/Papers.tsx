@@ -2,6 +2,8 @@ import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
 import { Papers } from "@/components/site/Papers";
 import { PageMeta } from "@/components/site/PageMeta";
+import { CommentSection } from "@/components/site/CommentSection";
+import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 
 export default function PapersPage() {
   return (
@@ -14,6 +16,7 @@ export default function PapersPage() {
       <Nav />
       {/* Heaven-bg header */}
       <section className="heaven-bg pt-36 pb-14 lg:pt-44">
+        <Breadcrumbs items={[{ label: "Seminary Papers / Publications" }]} />
         <div className="mx-auto max-w-5xl px-6 text-center lg:px-10">
           <p className="eyebrow">Open Access</p>
           <h1 className="mt-5 font-display text-5xl font-light leading-[1.02] text-navy sm:text-6xl lg:text-7xl">
@@ -60,6 +63,7 @@ export default function PapersPage() {
         </div>
       </section>
       <Papers />
+      <CommentSection pageSlug="papers" pageTitle="Seminary Papers / Publications" />
       <Footer />
     </main>
   );

@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ContentProvider } from "./context/ContentContext";
 import { ScrollToTop } from "./components/ScrollToTop";
+import { BackToTop } from "./components/BackToTop";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Blog from "./pages/Blog";
@@ -33,6 +34,7 @@ export default function App() {
           <Route path="/theology-on-tap" element={<TheologyOnTap />} />
           <Route path="/admin" element={<Admin />} />
         </Routes>
+        <BackToTop />
       </BrowserRouter>
     </ContentProvider>
   );

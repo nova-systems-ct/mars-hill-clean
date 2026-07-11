@@ -2,6 +2,7 @@ import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
 import { PodcastPlayer } from "@/components/site/PodcastPlayer";
 import { PageMeta } from "@/components/site/PageMeta";
+import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { useContent } from "@/context/ContentContext";
 
 export default function PodcastPage() {
@@ -25,6 +26,7 @@ export default function PodcastPage() {
 
       {/* Hero */}
       <section className="heaven-bg pt-36 pb-14 lg:pt-44">
+        <Breadcrumbs items={[{ label: "Podcast" }]} />
         <div className="mx-auto max-w-7xl px-6 lg:px-10">
           <div className="grid gap-12 lg:grid-cols-12 lg:items-start">
             <div className="lg:col-span-4">

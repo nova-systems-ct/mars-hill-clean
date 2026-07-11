@@ -3,6 +3,7 @@ import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
 import { About } from "@/components/site/About";
 import { PageMeta } from "@/components/site/PageMeta";
+import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 
 export default function AboutPage() {
   return (
@@ -14,6 +15,7 @@ export default function AboutPage() {
       />
       <Nav />
       <section className="heaven-bg pt-36 pb-10 lg:pt-44">
+        <Breadcrumbs items={[{ label: "About" }]} />
         <div className="mx-auto max-w-5xl px-6 text-center lg:px-10">
           <p className="eyebrow">The Founder</p>
           <h1 className="mt-5 font-display text-5xl font-light leading-[1.02] text-navy sm:text-6xl lg:text-7xl">

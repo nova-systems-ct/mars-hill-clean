@@ -11,7 +11,7 @@ export type Paper    = { id: string; title: string; category: PaperCategory; yea
 export type Book     = { id: string; title: string; author: string; era: BookEra; year: string; note: string; cover_url?: string | null; link_url?: string | null; };
 export type Episode  = { id: string; number: string; title: string; length: string; };
 export type Event    = { id: string; title: string; date_text: string; location: string; type: EventType; };
-export type BlogPost = { id: string; title: string; category: string; date_text: string; summary: string; content: string; image_url?: string | null; };
+export type BlogPost = { id: string; title: string; category: string; date_text: string; summary: string; content: string; image_url?: string | null; site?: string; };
 export type SiteSettings = Record<string, string>;
 
 // Seed types (no id — used only for inserts)
@@ -30,16 +30,16 @@ export const SEED_EVENTS: EventSeed[] = [
 ];
 
 export const SEED_BLOG_POSTS: BlogPostSeed[] = [
-  { title: "On the Knowledge of God",                category: "Theology",       date_text: "May 28, 2026",   summary: "Calvin opens the Institutes with a hinge: we cannot know ourselves without knowing God, nor God without knowing ourselves. A meditation.",                                content: "", image_url: null },
-  { title: "The Kalam Argument, Revisited",           category: "Apologetics",    date_text: "May 14, 2026",   summary: "A short defense of the second premise — that the universe began to exist — drawing on contemporary cosmology and classical metaphysics.",                            content: "", image_url: null },
-  { title: "Machen Still Speaks",                     category: "Church History",  date_text: "April 30, 2026", summary: "A century after Christianity and Liberalism, Machen's diagnosis remains startlingly current. The two religions still walk our pews.",                               content: "", image_url: null },
-  { title: "Reading Edwards on the Affections",       category: "Puritans",        date_text: "April 12, 2026", summary: "Jonathan Edwards on the marks of genuine religious affection — and why every believer should sit, slowly, with this Puritan classic.",                              content: "", image_url: null },
-  { title: "The Trinity and the Modalist Temptation", category: "Doctrine",        date_text: "March 27, 2026", summary: "Why oneness theology continually re-emerges, and why the historic doctrine of the Trinity is not a riddle but a refuge.",                                          content: "", image_url: null },
-  { title: "Why God Allows Evil",                     category: "Philosophy",      date_text: "March 06, 2026", summary: "A working theodicy rooted in the sovereignty and goodness of God — and an honest reckoning with the limits of our seeing.",                                      content: "", image_url: null },
+  { title: "On the Knowledge of God",                category: "Theology",       date_text: "May 28, 2026",   summary: "Calvin opens the Institutes with a hinge: we cannot know ourselves without knowing God, nor God without knowing ourselves. A meditation.",                                content: "", image_url: null, site: "marshill" },
+  { title: "The Kalam Argument, Revisited",           category: "Apologetics",    date_text: "May 14, 2026",   summary: "A short defense of the second premise — that the universe began to exist — drawing on contemporary cosmology and classical metaphysics.",                            content: "", image_url: null, site: "marshill" },
+  { title: "Machen Still Speaks",                     category: "Church History",  date_text: "April 30, 2026", summary: "A century after Christianity and Liberalism, Machen's diagnosis remains startlingly current. The two religions still walk our pews.",                               content: "", image_url: null, site: "marshill" },
+  { title: "Reading Edwards on the Affections",       category: "Puritans",        date_text: "April 12, 2026", summary: "Jonathan Edwards on the marks of genuine religious affection — and why every believer should sit, slowly, with this Puritan classic.",                              content: "", image_url: null, site: "marshill" },
+  { title: "The Trinity and the Modalist Temptation", category: "Doctrine",        date_text: "March 27, 2026", summary: "Why oneness theology continually re-emerges, and why the historic doctrine of the Trinity is not a riddle but a refuge.",                                          content: "", image_url: null, site: "marshill" },
+  { title: "Why God Allows Evil",                     category: "Philosophy",      date_text: "March 06, 2026", summary: "A working theodicy rooted in the sovereignty and goodness of God — and an honest reckoning with the limits of our seeing.",                                      content: "", image_url: null, site: "marshill" },
 ];
 
 export const DEFAULT_SETTINGS: SiteSettings = {
-  hero_tagline:         "Defending truth. Pursuing wisdom. Equipping men to think Biblically — with the rigor of the academy and the reverence of the church.",
+  hero_tagline:         "Defending truth. Pursuing wisdom. Equipping believers to think Biblically — with the rigor of the academy and the reverence of the church.",
   scripture_quote:      "Always be prepared to give an answer.",
   scripture_reference:  "1 Peter 3:15",
   youtube_url:          "https://www.youtube.com/@marshillnewengland2027",
@@ -127,7 +127,7 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
         supabase.from("library").select("*").order("created_at"),
         supabase.from("episodes").select("*").order("created_at"),
         supabase.from("events").select("*").order("created_at"),
-        supabase.from("blog_posts").select("*").order("created_at", { ascending: false }),
+        supabase.from("blog_posts").select("*").eq("site", "marshill").order("created_at", { ascending: false }),
         supabase.from("site_settings").select("key,value"),
       ]);
 
@@ -268,15 +268,15 @@ export function ContentProvider({ children }: { children: React.ReactNode }) {
   // ── Blog posts ────────────────────────────────────────────────────────────
 
   const addBlogPost = async (p: BlogPostSeed) => {
-    const { data, error } = await supabase.from("blog_posts").insert([p]).select().single();
+    const { data, error } = await supabase.from("blog_posts").insert([{ ...p, site: "marshill" }]).select().single();
     if (!error && data) setBlogPosts(prev => [data as BlogPost, ...prev]);
   };
   const updateBlogPost = async (id: string, data: Partial<BlogPostSeed>) => {
-    const { error } = await supabase.from("blog_posts").update(data).eq("id", id);
+    const { error } = await supabase.from("blog_posts").update(data).eq("id", id).eq("site", "marshill");
     if (!error) setBlogPosts(prev => prev.map(p => p.id === id ? { ...p, ...data } : p));
   };
   const deleteBlogPost = async (id: string) => {
-    const { error } = await supabase.from("blog_posts").delete().eq("id", id);
+    const { error } = await supabase.from("blog_posts").delete().eq("id", id).eq("site", "marshill");
     if (!error) setBlogPosts(prev => prev.filter(p => p.id !== id));
   };
 

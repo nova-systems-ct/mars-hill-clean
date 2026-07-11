@@ -1,4 +1,4 @@
-import tot from "@/assets/tot.jpg";
+import tot from "@/assets/mars-hill-3.png";
 import { useContent } from "@/context/ContentContext";
 
 export function TheologyOnTap() {

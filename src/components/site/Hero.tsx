@@ -1,4 +1,4 @@
-import hero from "@/assets/hero-new.png";
+import hero from "@/assets/mars-hill-3.png";
 import { Link } from "react-router-dom";
 
 export function Hero() {
@@ -27,7 +27,7 @@ export function Hero() {
           </h1>
           <div className="gold-rule my-7 max-w-xs" />
           <p className="max-w-xl text-pretty text-lg text-white sm:text-xl">
-            Defending truth. Pursuing wisdom. Equipping men to think Biblically —
+            Defending truth. Pursuing wisdom. Equipping believers to think Biblically —
             with the rigor of the academy and the reverence of the church.
           </p>
 

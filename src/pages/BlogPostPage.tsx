@@ -2,6 +2,8 @@ import { Link, useParams } from "react-router-dom";
 import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
 import { PageMeta } from "@/components/site/PageMeta";
+import { CommentSection } from "@/components/site/CommentSection";
+import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { useContent } from "@/context/ContentContext";
 import { slugify } from "@/lib/utils";
 
@@ -52,6 +54,7 @@ export default function BlogPostPage() {
 
       {/* Header */}
       <section className="heaven-bg pt-36 pb-10 lg:pt-44">
+        <Breadcrumbs items={[{ label: "Blog", to: "/blog" }, { label: post.title }]} />
         <div className="mx-auto max-w-3xl px-6 lg:px-10">
           <Link to="/blog" className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 hover:text-navy transition">
             ← Blog
@@ -105,6 +108,8 @@ export default function BlogPostPage() {
           </Link>
         </div>
       </article>
+
+      <CommentSection pageSlug={slug ?? ""} pageTitle={post.title} />
 
       <Footer />
     </main>

@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
 import { PageMeta } from "@/components/site/PageMeta";
+import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { useContent } from "@/context/ContentContext";
 
 const otherClubs = [
@@ -31,6 +32,7 @@ export default function SteepedInTruth() {
 
       {/* Header */}
       <section className="heaven-bg pt-36 pb-14 lg:pt-44">
+        <Breadcrumbs items={[{ label: "Steeped in Truth" }]} />
         <div className="mx-auto max-w-5xl px-6 text-center lg:px-10">
           <p className="eyebrow">A Women's Ministry</p>
           <h1 className="mt-5 font-display text-5xl font-light leading-[1.02] text-navy sm:text-6xl lg:text-7xl">

@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Nav } from "@/components/site/Nav";
 import { Footer } from "@/components/site/Footer";
 import { PageMeta } from "@/components/site/PageMeta";
+import { Breadcrumbs } from "@/components/site/Breadcrumbs";
 import { useContent } from "@/context/ContentContext";
 import { slugify } from "@/lib/utils";
 
@@ -67,6 +68,7 @@ export default function BlogPage() {
 
       {/* Header */}
       <section className="heaven-bg pt-36 pb-12 lg:pt-44">
+        <Breadcrumbs items={[{ label: "Blog" }]} />
         <div className="mx-auto max-w-5xl px-6 text-center lg:px-10">
           <p className="eyebrow">Field Notes</p>
           <h1 className="mt-5 font-display text-5xl font-light leading-[1.02] text-navy sm:text-6xl lg:text-7xl">
