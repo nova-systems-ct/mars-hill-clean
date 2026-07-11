@@ -7,7 +7,7 @@ import { PodcastPlayer } from "@/components/site/PodcastPlayer";
 import { PageMeta } from "@/components/site/PageMeta";
 import { useContent } from "@/context/ContentContext";
 import founder from "@/assets/founder-real.jpg";
-import tot from "@/assets/tot.jpg";
+import tot from "@/assets/mars-hill-3.jpg";
 
 export default function Home() {
   const { papers, events, getSetting } = useContent();

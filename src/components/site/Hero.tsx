@@ -1,4 +1,4 @@
-import hero from "@/assets/mars-hill-3.jpg";
+import hero from "@/assets/mars-1.jpg";
 import { Link } from "react-router-dom";
 
 export function Hero() {
@@ -8,9 +8,9 @@ export function Hero() {
       <div className="absolute inset-0 -z-10">
         <img
           src={hero}
-          alt="Men gathered in reverent theological discussion"
+          alt="An open Bible lit by a window, with a quill and inkwell on a wooden desk"
           className="h-full w-full object-cover"
-          style={{ objectPosition: "center 35%" }}
+          style={{ objectPosition: "center" }}
         />
         {/* Light-blue sky gradient at top — the signature look */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_0%,color-mix(in_oklab,var(--sky)_65%,transparent)_0%,transparent_65%)]" />
