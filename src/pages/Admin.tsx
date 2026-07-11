@@ -1248,19 +1248,35 @@ function useComments() {
   const reload = useCallback(async () => {
     setLoading(true);
     const { data, error } = await supabase.from("comments").select("*").order("created_at", { ascending: false });
-    if (error) setDbError(error.message); else { setDbError(null); setComments((data ?? []) as AdminComment[]); }
+    if (error) {
+      console.error("[Admin:comments] Load failed:", { message: error.message, code: error.code, details: error.details, hint: error.hint });
+      setDbError(error.message);
+    } else {
+      setDbError(null);
+      setComments((data ?? []) as AdminComment[]);
+    }
     setLoading(false);
   }, []);
 
   useEffect(() => { reload(); }, [reload]);
 
-  const approve = async (id: string) => {
+  const approve = async (id: string): Promise<{ ok: boolean; error?: string }> => {
     const { error } = await supabase.from("comments").update({ approved: true }).eq("id", id);
-    if (!error) setComments((prev) => prev.map((c) => c.id === id ? { ...c, approved: true } : c));
+    if (error) {
+      console.error("[Admin:comments] Approve failed:", { message: error.message, code: error.code, details: error.details, hint: error.hint });
+      return { ok: false, error: error.message };
+    }
+    setComments((prev) => prev.map((c) => c.id === id ? { ...c, approved: true } : c));
+    return { ok: true };
   };
-  const remove = async (id: string) => {
+  const remove = async (id: string): Promise<{ ok: boolean; error?: string }> => {
     const { error } = await supabase.from("comments").delete().eq("id", id);
-    if (!error) setComments((prev) => prev.filter((c) => c.id !== id));
+    if (error) {
+      console.error("[Admin:comments] Delete failed:", { message: error.message, code: error.code, details: error.details, hint: error.hint });
+      return { ok: false, error: error.message };
+    }
+    setComments((prev) => prev.filter((c) => c.id !== id));
+    return { ok: true };
   };
 
   return { comments, loading, dbError, reload, approve, remove };
@@ -1321,9 +1337,9 @@ function CommentsManager() {
               <Row>
                 <div className="mt-4 flex gap-3">
                   {!c.approved && (
-                    <button onClick={async () => { await approve(c.id); setFlash("Approved ✓"); }} className={btnPrimary}>Approve</button>
+                    <button onClick={async () => { const r = await approve(c.id); setFlash(r.ok ? "Approved ✓" : `Approve failed: ${r.error}`); }} className={btnPrimary}>Approve</button>
                   )}
-                  <button onClick={async () => { if (confirm("Delete this comment?")) { await remove(c.id); setFlash("Deleted ✓"); } }} className={btnDanger}>Delete</button>
+                  <button onClick={async () => { if (confirm("Delete this comment?")) { const r = await remove(c.id); setFlash(r.ok ? "Deleted ✓" : `Delete failed: ${r.error}`); } }} className={btnDanger}>Delete</button>
                 </div>
               </Row>
             </li>

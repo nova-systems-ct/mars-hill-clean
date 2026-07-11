@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
+import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 
 type Comment = {
   id: string;
@@ -47,31 +47,52 @@ export function CommentSection({ pageSlug, pageTitle }: { pageSlug: string; page
     setStatus("sending");
     setErrorMsg("");
 
-    const { data, error } = await supabase
+    if (!isSupabaseConfigured) {
+      console.error("[CommentSection] Supabase is not configured — VITE_SUPABASE_URL/VITE_SUPABASE_ANON_KEY missing.");
+      setErrorMsg("Comments aren't configured on this site yet. Check environment variables.");
+      setStatus("error");
+      return;
+    }
+
+    const payload = {
+      page_slug: pageSlug,
+      page_title: pageTitle,
+      commenter_name: name.trim(),
+      commenter_email: email.trim() || null,
+      comment_text: text.trim(),
+      approved: false,
+    };
+    console.log("[CommentSection] Submitting comment:", payload);
+
+    const { data, error, status: httpStatus } = await supabase
       .from("comments")
-      .insert([{
-        page_slug: pageSlug,
-        page_title: pageTitle,
-        commenter_name: name.trim(),
-        commenter_email: email.trim() || null,
-        comment_text: text.trim(),
-        approved: false,
-      }])
+      .insert([payload])
       .select()
       .single();
 
+    console.log("[CommentSection] Insert result:", { httpStatus, data, error });
+
     if (error || !data) {
-      setErrorMsg("Something went wrong saving your comment. Please try again.");
+      // Log the full Postgres/PostgREST error — message, code, details, and hint each pin
+      // down a different failure mode (missing column, RLS rejection, bad type, etc.).
+      console.error("[CommentSection] Insert failed:", {
+        message: error?.message, code: error?.code, details: error?.details, hint: error?.hint,
+      });
+      const detail = error?.message ? ` (${error.code ? `${error.code}: ` : ""}${error.message})` : "";
+      setErrorMsg(`Something went wrong saving your comment. Please try again.${import.meta.env.DEV ? detail : ""}`);
       setStatus("error");
       return;
     }
 
     // Best-effort — the comment is already saved even if the email notification fails.
+    console.log("[CommentSection] Comment saved, notifying admin…");
     fetch("/api/comment-notify", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ page_slug: pageSlug, page_title: pageTitle, commenter_name: name.trim(), comment_text: text.trim() }),
-    }).catch(() => {});
+    }).then((r) => {
+      if (!r.ok) console.error("[CommentSection] comment-notify responded", r.status);
+    }).catch((err) => console.error("[CommentSection] comment-notify request failed:", err));
 
     setComments((prev) => [data as Comment, ...prev]);
     setName(""); setEmail(""); setText("");

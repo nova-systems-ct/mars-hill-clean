@@ -20,19 +20,23 @@ export default async function handler(req: Request): Promise<Response> {
 
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
+    console.error("[comment-notify] RESEND_API_KEY is not set — check Vercel environment variables.");
     return new Response(JSON.stringify({ error: "Email service not configured" }), { status: 500, headers: cors });
   }
 
   let body: { page_title?: string; page_slug?: string; commenter_name?: string; comment_text?: string };
   try {
     body = await req.json();
+    console.log("[comment-notify] Incoming request body:", body);
   } catch {
+    console.error("[comment-notify] Failed to parse request body as JSON");
     return new Response(JSON.stringify({ error: "Invalid request body" }), { status: 400, headers: cors });
   }
 
   const { page_title = "", page_slug = "", commenter_name = "Anonymous", comment_text = "" } = body;
 
   if (!comment_text) {
+    console.error("[comment-notify] Rejected — comment_text missing from body:", body);
     return new Response(JSON.stringify({ error: "comment_text is required" }), { status: 400, headers: cors });
   }
 
@@ -53,6 +57,7 @@ export default async function handler(req: Request): Promise<Response> {
   `;
 
   try {
+    console.log("[comment-notify] Sending via Resend to", ADMIN_EMAIL, "from", fromAddress);
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
@@ -64,15 +69,18 @@ export default async function handler(req: Request): Promise<Response> {
       }),
     });
 
+    console.log("[comment-notify] Resend response status:", res.status);
+
     if (!res.ok) {
       const errText = await res.text().catch(() => "unknown");
-      console.error("Comment notification email failed:", errText);
+      console.error("[comment-notify] Resend send failed:", res.status, errText);
       return new Response(JSON.stringify({ error: "Failed to send notification email" }), { status: 500, headers: cors });
     }
 
+    console.log("[comment-notify] Notification sent successfully for page:", page_slug);
     return new Response(JSON.stringify({ success: true }), { status: 200, headers: cors });
   } catch (err) {
-    console.error("Comment notify API error:", err);
+    console.error("[comment-notify] Unexpected error:", err);
     return new Response(JSON.stringify({ error: "Unexpected error" }), { status: 500, headers: cors });
   }
 }
