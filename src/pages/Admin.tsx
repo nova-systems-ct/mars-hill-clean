@@ -1,15 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import type { Session } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
 import {
   useContent,
   type PaperCategory, type BookEra, type EventType,
   type Paper, type Book, type Episode, type Event, type BlogPost,
 } from "@/context/ContentContext";
-
-const ADMIN_EMAIL    = "defender315@msn.com";
-const ADMIN_PASSWORD = "MarsHill2024";
-const AUTH_KEY       = "mha-admin-auth";
 
 // ── UI primitives ──────────────────────────────────────────────────────────────
 
@@ -57,19 +54,24 @@ function useFlash() {
 
 // ── Login ──────────────────────────────────────────────────────────────────────
 
-function LoginScreen({ onLogin }: { onLogin: () => void }) {
+function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [err, setErr] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (email.trim().toLowerCase() === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-      localStorage.setItem(AUTH_KEY, "true");
-      onLogin();
-    } else {
-      setErr(true);
-    }
+    setErr(false);
+    setSubmitting(true);
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password,
+    });
+    setSubmitting(false);
+    if (error) setErr(true);
+    // On success, the onAuthStateChange listener in AdminPage picks up the new
+    // session and re-renders — no local state to set here.
   };
 
   return (
@@ -107,8 +109,12 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
               Incorrect email or password. Please try again.
             </p>
           )}
-          <button type="submit" className="mt-6 w-full rounded-full bg-navy py-3 text-xs font-semibold uppercase tracking-[0.2em] text-cloud transition hover:bg-gold hover:text-navy">
-            Sign in
+          <button
+            type="submit"
+            disabled={submitting}
+            className="mt-6 w-full rounded-full bg-navy py-3 text-xs font-semibold uppercase tracking-[0.2em] text-cloud transition hover:bg-gold hover:text-navy disabled:pointer-events-none disabled:opacity-60"
+          >
+            {submitting ? "Signing in…" : "Sign in"}
           </button>
         </form>
 
@@ -183,10 +189,7 @@ function PaperUploadBtn({ paper, onDone }: { paper: Paper; onDone: (url: string)
     } else {
       alert(
         `PDF upload failed.\n\nError: ${result.errorMsg}\n\n` +
-        `To fix this:\n` +
-        `1. Go to Supabase → Storage → Create a bucket named "papers" (set to Public)\n` +
-        `2. In the bucket Policies, add a policy allowing INSERT for the anon role\n` +
-        `   (or use "Give insert access to everyone" template)`
+        `If this persists, your admin session may have expired — try signing out and back in.`
       );
     }
     if (inputRef.current) inputRef.current.value = "";
@@ -1447,9 +1450,22 @@ const SETTINGS_TABS: TabDef[] = [
 ];
 
 export default function AdminPage() {
-  const [authed, setAuthed] = useState(() => localStorage.getItem(AUTH_KEY) === "true");
+  const [session, setSession] = useState<Session | null | undefined>(undefined);
   const [activeTab, setActiveTab] = useState<Tab>("overview");
   const [pendingComments, setPendingComments] = useState<number | null>(null);
+
+  // undefined = still checking, null = signed out, Session = signed in.
+  // The actual write authorization lives in Supabase RLS (writes require the
+  // `authenticated` role) — this session check just gates the admin UI itself.
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setSession(data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      setSession(newSession);
+    });
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  const authed = !!session;
 
   const refreshPendingCount = useCallback(() => {
     supabase.from("comments").select("id", { count: "exact", head: true }).eq("approved", false)
@@ -1458,8 +1474,11 @@ export default function AdminPage() {
 
   useEffect(() => { if (authed) refreshPendingCount(); }, [authed, activeTab, refreshPendingCount]);
 
-  if (!authed) return <LoginScreen onLogin={() => setAuthed(true)} />;
-  const logout = () => { localStorage.removeItem(AUTH_KEY); setAuthed(false); };
+  if (session === undefined) {
+    return <div className="grid min-h-screen place-items-center bg-cloud text-sm text-slate-ink">Loading…</div>;
+  }
+  if (!authed) return <LoginScreen />;
+  const logout = () => { supabase.auth.signOut(); };
 
   return (
     <div className="min-h-screen bg-cloud">
