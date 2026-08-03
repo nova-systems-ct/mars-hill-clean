@@ -64,15 +64,20 @@ export function CommentSection({ pageSlug, pageTitle }: { pageSlug: string; page
     };
     console.log("[CommentSection] Submitting comment:", payload);
 
-    const { data, error, status: httpStatus } = await supabase
+    // Plain insert (no .select()) — the anon RLS policy only allows reading back
+    // approved comments, so requesting the inserted row's representation here
+    // (as .select().single() used to) makes Postgres re-check that policy against
+    // the freshly-inserted approved=false row as part of the RETURNING clause,
+    // which fails and rolls back the whole insert. We don't need the row back:
+    // pending comments aren't rendered anyway, so build the optimistic entry
+    // from what we already know locally.
+    const { error, status: httpStatus } = await supabase
       .from("comments")
-      .insert([payload])
-      .select()
-      .single();
+      .insert([payload]);
 
-    console.log("[CommentSection] Insert result:", { httpStatus, data, error });
+    console.log("[CommentSection] Insert result:", { httpStatus, error });
 
-    if (error || !data) {
+    if (error) {
       // Log the full Postgres/PostgREST error — message, code, details, and hint each pin
       // down a different failure mode (missing column, RLS rejection, bad type, etc.).
       console.error("[CommentSection] Insert failed:", {
@@ -84,6 +89,17 @@ export function CommentSection({ pageSlug, pageTitle }: { pageSlug: string; page
       return;
     }
 
+    const data: Comment = {
+      id: crypto.randomUUID(),
+      page_slug: pageSlug,
+      page_title: pageTitle,
+      commenter_name: payload.commenter_name,
+      commenter_email: payload.commenter_email,
+      comment_text: payload.comment_text,
+      approved: false,
+      created_at: new Date().toISOString(),
+    };
+
     // Best-effort — the comment is already saved even if the email notification fails.
     console.log("[CommentSection] Comment saved, notifying admin…");
     fetch("/api/comment-notify", {
@@ -94,7 +110,7 @@ export function CommentSection({ pageSlug, pageTitle }: { pageSlug: string; page
       if (!r.ok) console.error("[CommentSection] comment-notify responded", r.status);
     }).catch((err) => console.error("[CommentSection] comment-notify request failed:", err));
 
-    setComments((prev) => [data as Comment, ...prev]);
+    setComments((prev) => [data, ...prev]);
     setName(""); setEmail(""); setText("");
     setStatus("sent");
   };
