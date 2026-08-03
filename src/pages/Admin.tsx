@@ -689,13 +689,18 @@ function PodcastManager() {
 const EVENT_TYPES: EventType[] = ["in-person","hybrid"];
 
 function EventsManager() {
-  const { events, addEvent, updateEvent, deleteEvent, resetEvents, loading, dbError } = useContent();
+  const { events, addEvent, updateEvent, deleteEvent, resetEvents, settings, updateSettings, loading, dbError } = useContent();
   const blank = { title:"", date_text:"", location:"", type:"in-person" as EventType };
   const [form, setForm] = useState(blank);
   const [editId, setEditId] = useState<string|null>(null);
   const [editForm, setEditForm] = useState(blank);
   const [busy, setBusy] = useState(false);
   const [flash, setFlash] = useFlash();
+
+  const [imageFile, setImageFile] = useState<File|null>(null);
+  const [imagePreview, setImagePreview] = useState("");
+  const [imageBusy, setImageBusy] = useState(false);
+  const [imageFlash, setImageFlash] = useFlash();
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault(); if (!form.title) return;
@@ -709,9 +714,42 @@ function EventsManager() {
     setEditId(null); setFlash("Saved ✓"); setBusy(false);
   };
 
+  const handlePageImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]; if (!file) return;
+    setImageFile(file); setImagePreview(URL.createObjectURL(file));
+  };
+  const savePageImage = async () => {
+    if (!imageFile) return;
+    setImageBusy(true);
+    const url = await uploadBlogImage(imageFile, "theology-on-tap");
+    if (url) { await updateSettings({ tot_hero_image_url: url }); setImageFlash("Saved ✓"); setImageFile(null); setImagePreview(""); }
+    else { setImageFlash("Upload failed — try again"); }
+    setImageBusy(false);
+  };
+
   return (
     <div className="space-y-8">
       {dbError && <DbError msg={dbError} />}
+      <div className="rounded-2xl border border-border bg-cloud p-6">
+        <h2 className="font-display text-2xl text-navy">Theology on Tap — Page Image</h2>
+        <p className="mt-2 text-sm text-slate-ink">The large photo shown on the Theology on Tap page and homepage section.</p>
+        <div className="mt-4 flex flex-wrap items-start gap-5">
+          <img
+            src={imagePreview || settings.tot_hero_image_url || ""}
+            alt=""
+            className="h-32 w-48 rounded-xl border border-border object-cover"
+            style={{ display: (imagePreview || settings.tot_hero_image_url) ? "block" : "none" }}
+          />
+          <div className="min-w-[220px] flex-1">
+            <input type="file" accept="image/*" onChange={handlePageImageChange} className="w-full cursor-pointer rounded-2xl border border-border bg-cloud px-4 py-2.5 text-sm text-slate-ink file:mr-4 file:rounded-full file:border-0 file:bg-navy file:px-4 file:py-1 file:text-xs file:font-semibold file:uppercase file:tracking-[0.2em] file:text-cloud hover:file:bg-gold hover:file:text-navy" />
+            <p className="mt-1 text-xs text-slate-ink/70">Stored in Supabase Storage · blog-images bucket</p>
+            <Row>
+              <button type="button" onClick={savePageImage} disabled={!imageFile||imageBusy} className={btnPrimary}>{imageBusy?"Uploading…":"Save Image"}</button>
+              <Flash msg={imageFlash} />
+            </Row>
+          </div>
+        </div>
+      </div>
       <div className="grid gap-10 lg:grid-cols-2">
         <div>
           <p className="mb-4 text-base text-slate-ink">Add, edit, and remove Theology on Tap discussion dates shown on the homepage and Theology on Tap page.</p>
@@ -768,9 +806,10 @@ function EventsManager() {
 
 // ── Blog manager ───────────────────────────────────────────────────────────────
 
-async function uploadBlogImage(file: File): Promise<string | null> {
+async function uploadBlogImage(file: File, folder?: string): Promise<string | null> {
   const ext = file.name.split(".").pop() || "jpg";
-  const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const name = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const path = folder ? `${folder}/${name}` : name;
   const { error } = await supabase.storage.from("blog-images").upload(path, file, { cacheControl: "3600", upsert: false });
   if (error) { console.error("Image upload:", error.message); return null; }
   const { data } = supabase.storage.from("blog-images").getPublicUrl(path);

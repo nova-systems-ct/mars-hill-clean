@@ -2,7 +2,8 @@ import tot from "@/assets/mars-hill-3.jpg";
 import { useContent } from "@/context/ContentContext";
 
 export function TheologyOnTap() {
-  const { events } = useContent();
+  const { events, settings } = useContent();
+  const heroImage = settings.tot_hero_image_url || tot;
 
   return (
     <section id="tot" className="bg-white py-20 lg:py-28">
@@ -35,7 +36,7 @@ export function TheologyOnTap() {
 
           <div className="lg:col-span-7">
             <div className="relative overflow-hidden rounded-3xl shadow-lg ring-1 ring-navy/10">
-              <img src={tot} alt="Men in theological discussion at Theology on Tap"
+              <img src={heroImage} alt="Men in theological discussion at Theology on Tap"
                 width={1600} height={1100} loading="lazy" className="aspect-[4/3] w-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-navy/70 via-transparent to-transparent" />
               <div className="absolute bottom-6 left-6 right-6">
